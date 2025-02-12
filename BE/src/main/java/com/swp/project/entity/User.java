@@ -46,4 +46,31 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<MembershipSubscription> membershipSubscriptions;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "doctor")
+    private List<WorkingSchedule> workingSchedules;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "doctor")
+    private List<Booking> doctorBookings;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "member")
+    private List<Booking> memberBookings;
+
+    @OneToMany(mappedBy = "parent")
+    private List<ConsultationRequest> consultationRequestsAsParent;
+
+    @OneToMany(mappedBy = "doctor")
+    private List<ConsultationRequest> consultationRequestsAsDoctor;
+
+    @OneToMany(mappedBy = "user")
+    private List<ConsultationResponse> consultationResponses;
+
+    @OneToMany(mappedBy = "member")
+    private List<Feedback> memberFeedbacks;
+
+    @OneToMany(mappedBy = "doctor")
+    private List<Feedback> doctorFeedbacks;
+
 }

@@ -26,13 +26,12 @@ public class WorkingSchedule {
 
     // Bác sĩ nào
     @ManyToOne
+    @JoinColumn(name = "doctor_id")
     private User doctor;
 
     // Khung giờ làm việc
     @ManyToOne
+    @JoinColumn(name = "slot_time_id")
     private SlotTime slotTime;
 
-    // 1 lịch có thể có nhiều booking
-    @OneToMany(mappedBy = "workingSchedule")
-    private List<Booking> bookings;
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -22,11 +23,14 @@ public class SlotTime {
 
     // Ví dụ dùng kiểu số hoặc LocalTime
     @Column(name = "start_time")
-    private Integer startTime;
+    private LocalTime startTime;
     @Column(name = "end_time")
-    private Integer endTime;
+    private LocalTime endTime;
 
     // 1 SlotTime có thể được nhiều WorkingSchedule tham chiếu
     @OneToMany(mappedBy = "slotTime")
     private List<WorkingSchedule> workingSchedules;
+
+    @OneToMany(mappedBy = "slotTime")
+    private List<Booking> bookings;
 }

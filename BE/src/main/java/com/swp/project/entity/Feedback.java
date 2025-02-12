@@ -20,13 +20,21 @@ public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private double rating;
+
     private String comment;
+
     private Date createdAt;
+
     @Enumerated(EnumType.STRING)
     private FeedbackType feedbackType;
+
     @ManyToOne(optional = false)
-    private User parentId;
+    @JoinColumn(name = "member_id")
+    private User member;
+
     @ManyToOne(optional = true)
-    private User doctorId;
+    @JoinColumn(name = "doctor_id")
+    private User doctor;
 }

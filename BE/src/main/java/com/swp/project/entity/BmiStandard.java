@@ -21,6 +21,7 @@ public class BmiStandard {
     private Integer ageInMonths;
 
     // Weight
+    private Double weightNeg4Sd;
     private Double weightNeg3Sd;
     private Double weightNeg2Sd;
     private Double weightNeg1Sd;
@@ -28,8 +29,10 @@ public class BmiStandard {
     private Double weightPos1Sd;
     private Double weightPos2Sd;
     private Double weightPos3Sd;
+    private Double weightPos4Sd;
 
     // Height
+    private Double heightNeg4Sd;
     private Double heightNeg3Sd;
     private Double heightNeg2Sd;
     private Double heightNeg1Sd;
@@ -37,8 +40,10 @@ public class BmiStandard {
     private Double heightPos1Sd;
     private Double heightPos2Sd;
     private Double heightPos3Sd;
+    private Double heightPos4Sd;
 
     // BMI
+    private Double bmiNeg4Sd;
     private Double bmiNeg3Sd;
     private Double bmiNeg2Sd;
     private Double bmiNeg1Sd;
@@ -46,4 +51,5 @@ public class BmiStandard {
     private Double bmiPos1Sd;
     private Double bmiPos2Sd;
     private Double bmiPos3Sd;
+    private Double bmiPos4Sd;
 }

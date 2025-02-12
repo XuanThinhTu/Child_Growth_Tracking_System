@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -20,20 +21,34 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+
+    private LocalDate date;
+
     private String content;
+
+    @Column(name = "meeting_link")
     private String meetingLink;
+
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
-    @ManyToOne
-    private User parent;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @ManyToOne
+    @JoinColumn(name = "member_id")
+    private User member;
+
+    @ManyToOne
+    @JoinColumn(name = "children_id")
     private Children children;
 
     @ManyToOne
-    private WorkingSchedule workingSchedule;
+    @JoinColumn(name = "doctor_id")
+    private User doctor;
+
+    @ManyToOne
+    @JoinColumn(name = "slot_time_id")
+    private SlotTime slotTime;
 
 }
