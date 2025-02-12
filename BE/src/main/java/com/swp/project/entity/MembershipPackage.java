@@ -23,7 +23,8 @@ public class MembershipPackage {
     private String description;
     private double price;
     private int duration;
-    private boolean isEnable;
+    private boolean isEnable = true;
+    private boolean isDeleted = false;
 
     @OneToMany(mappedBy = "membershipPackage")
     private List<MembershipSubscription> membershipSubscriptions;
