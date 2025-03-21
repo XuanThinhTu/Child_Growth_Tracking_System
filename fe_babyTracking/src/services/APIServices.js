@@ -96,3 +96,111 @@ export async function verifyUser(tokenParam) {
     }
   }
 }
+
+export const getUserInformation = async () => {
+  try {
+    const token = sessionStorage.getItem("token");
+    const result = await axios.get(`${baseUrl}/user/p`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    return result.data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+// Current Membership
+export const getMyMembershipPackage = async () => {
+  try {
+    const token = sessionStorage.getItem("token");
+    const result = await axios.get(`${baseUrl}/membership-package/my-package`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    return result.data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const getAllBabies = async () => {
+  try {
+    const result = await axios.get(`${baseUrl}/children/list`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return result.data;
+  } catch (error) {
+    console.log("API Call Error:", error);
+  }
+};
+
+export const getBabyInfo = async (babyId) => {
+  try {
+    const result = await axios.get(`${baseUrl}/children/info/${babyId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return result.data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const addNewBaby = async (babyName, birthday, gender) => {
+  try {
+    const result = await axios.post(
+      `${baseUrl}/children/add?name=${babyName}&birthDate=${birthday}&gender=${gender}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateBabyProfile = async (babyId, name, birthday, gender) => {
+  try {
+    const result = await axios.put(
+      `${baseUrl}/children/update/${babyId}?name=${name}&birthDate=${birthday}&gender=${gender}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteBaby = async (babyId) => {
+  try {
+    const result = await axios.delete(`${baseUrl}/children/delete/${babyId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
