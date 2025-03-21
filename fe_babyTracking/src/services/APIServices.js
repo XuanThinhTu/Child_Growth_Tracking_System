@@ -461,3 +461,59 @@ export const addNewConsultationReply = async (consultationId, content) => {
     console.log(error);
   }
 };
+
+export const getMembershipPackages = async () => {
+  try {
+    const result = await axios.get(`${baseUrl}/membership-package/list`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const createBlog = async (formData) => {
+  try {
+    const response = await axios.post(`${baseUrl}/blogs/create`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data;
+    }
+    throw error;
+  }
+};
+
+// get all blogs
+export const getAllBlogs = async () => {
+  try {
+    const response = await axios.get(`${baseUrl}/blogs/all`);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data;
+    }
+    throw error;
+  }
+};
+
+// Get All Categories
+export const getAllCategories = async () => {
+  try {
+    const response = await axios.get(`${baseUrl}/category/all`);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data;
+    }
+    throw error;
+  }
+};
