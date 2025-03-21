@@ -204,3 +204,74 @@ export const deleteBaby = async (babyId) => {
     console.log(error);
   }
 };
+
+export const addBabyGrowthData = async (
+  babyId,
+  height,
+  weight,
+  headCir,
+  date
+) => {
+  try {
+    const growthData = {
+      height: height,
+      weight: weight,
+      headCircumference: headCir,
+      measuredAt: date,
+    };
+    const result = axios.post(
+      `${baseUrl}/api/grow-tracker/${babyId}`,
+      growthData
+    );
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getBoyStandardIndex = async () => {
+  try {
+    const result = await axios.get(`${baseUrl}/api/standard-index/pro`);
+    const standard = result.data.data;
+    const boyStandard = standard.filter((item) => item.gender === "boys");
+    return boyStandard;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getGirlStandardIndex = async () => {
+  try {
+    const result = await axios.get(`${baseUrl}/api/standard-index/pro`);
+    const standard = result.data.data;
+    const girlStandard = standard.filter((item) => item.gender === "girl");
+    return girlStandard;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getBabyGrowthData = async (babyId) => {
+  try {
+    const result = await axios.get(`${baseUrl}/api/grow-tracker/${babyId}`);
+    return result.data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getPredictGrowthData = async (babyId) => {
+  try {
+    const result = await axios.get(
+      `${baseUrl}/api/grow-tracker/${babyId}/predict-next?n=2`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return result.data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
