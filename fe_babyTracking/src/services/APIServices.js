@@ -632,3 +632,33 @@ export const getAllConsultations = async () => {
     console.error(error);
   }
 };
+
+export const assignConsultation = async (doctorId, consultationId) => {
+  try {
+    const result = await axios.post(
+      `${baseUrl}/admin/consultation/assign?consultationRequestId=${consultationId}&doctorId=${doctorId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllChildren = async () => {
+  try {
+    const result = await axios.get(`${baseUrl}/admin/children?page=0&size=20`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
