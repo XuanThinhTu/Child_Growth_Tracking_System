@@ -1,10 +1,13 @@
 package com.swp.project.entity;
 
+import com.swp.project.enums.PeriodType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,14 +15,16 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "bmi_standards")
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class BmiStandard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer sex;// 1: bé trai, 2: bé gái
-    private Integer ageInMonths;
-
+    private String gender;
+    private Integer period;
+    @Enumerated(EnumType.STRING)
+    private PeriodType periodType;// DAY: duoi 5 tuoi, MONTH: tu 5-19 tuoi
     // Weight
     private Double weightNeg4Sd;
     private Double weightNeg3Sd;
@@ -52,4 +57,16 @@ public class BmiStandard {
     private Double bmiPos2Sd;
     private Double bmiPos3Sd;
     private Double bmiPos4Sd;
+
+    // Head circumference
+    private Double headCircumferenceNeg4Sd;
+    private Double headCircumferenceNeg3Sd;
+    private Double headCircumferenceNeg2Sd;
+    private Double headCircumferenceNeg1Sd;
+    private Double headCircumferenceMedian;
+    private Double headCircumferencePos1Sd;
+    private Double headCircumferencePos2Sd;
+    private Double headCircumferencePos3Sd;
+    private Double headCircumferencePos4Sd;
+
 }

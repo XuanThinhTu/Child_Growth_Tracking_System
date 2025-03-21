@@ -1,8 +1,8 @@
 package com.swp.project.enums;
 
 public enum BookingStatus {
-    BOOKED,
+    PENDING,
     CANCELLED,
-    COMPLETED,
-    ON_GOING
+    CLOSED,
+    PROCESSING
 }

@@ -20,4 +20,5 @@ public class FAQ {
     private String answer;
     @ManyToOne
     private Category category;
+    private boolean isDeleted;
 }

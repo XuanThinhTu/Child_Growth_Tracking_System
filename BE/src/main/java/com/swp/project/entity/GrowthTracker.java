@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,10 +18,12 @@ public class GrowthTracker {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int height;
-    private int weight;
-    private int headCircumference;
-    private Date measuredAt;
-    @ManyToOne
+    private Double height;
+    private Double weight;
+    private Double headCircumference;
+    private Double bmi;
+    private LocalDateTime measuredAt;
+    @ManyToOne(cascade =CascadeType.ALL)
     private Children children;
+    private boolean deleted = false;
 }

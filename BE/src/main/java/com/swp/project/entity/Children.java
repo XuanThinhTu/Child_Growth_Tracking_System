@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,6 +19,7 @@ import java.sql.Date;
 public class Children {
 
     @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
@@ -27,4 +29,13 @@ public class Children {
 
     @ManyToOne
     private User user;
+    @OneToMany(mappedBy = "children", cascade = {CascadeType.ALL, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<GrowthTracker> growthTrackers;
+
+    @OneToMany(mappedBy = "children", cascade = {CascadeType.ALL, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Booking> bookings;
+
+    @OneToMany(mappedBy = "child", cascade = {CascadeType.ALL, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<ConsultationRequest> consultationRequests;
+
 }
