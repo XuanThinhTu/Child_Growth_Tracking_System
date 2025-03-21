@@ -1,5 +1,6 @@
 package com.swp.project.entity;
 
+import com.swp.project.enums.WorkingScheduleStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +22,8 @@ public class WorkingSchedule {
     private int id;
 
     private LocalDate date;   // ngày làm việc
-    private String status;    // active, off, ...
+    @Enumerated(EnumType.STRING)
+    private WorkingScheduleStatus status;    // active, off, ...
 
     // Bác sĩ nào
     @ManyToOne

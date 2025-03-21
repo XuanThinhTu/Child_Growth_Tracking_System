@@ -20,12 +20,13 @@ public class Blog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String title;
+    @Column(columnDefinition = "TEXT", length = 5000)
     private String content;
     private Date createdAt;
     private Date updatedAt;
     @ManyToOne
     private User user;
-    @OneToMany(mappedBy = "blog")
+    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogImage> blogImages;
     @ManyToOne
     private Category category;

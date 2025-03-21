@@ -39,7 +39,7 @@ public class Booking {
     @JoinColumn(name = "member_id")
     private User member;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "children_id")
     private Children children;
 

@@ -1,5 +1,7 @@
 package com.swp.project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.swp.project.enums.ConsultationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,9 +25,17 @@ public class ConsultationRequest {
 
     @Column(name = "request_title")
     private String requestTitle;
+    @Column(name = "note")
+    private String note;
 
     @Column(name = "request_date")
     private Date requestDate;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private ConsultationStatus status;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Children child;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "parent_id")
@@ -35,6 +45,7 @@ public class ConsultationRequest {
     @JoinColumn(name = "doctor_id")
     private User doctor;
 
-    @OneToMany(mappedBy = "consultationRequest")
+    @JsonIgnore
+    @OneToMany(mappedBy = "consultationRequest", cascade = {CascadeType.ALL, CascadeType.REMOVE})
     private List<ConsultationResponse> consultationResponses;
 }

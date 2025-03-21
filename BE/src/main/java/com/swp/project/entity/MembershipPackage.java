@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,4 +29,7 @@ public class MembershipPackage {
 
     @OneToMany(mappedBy = "membershipPackage")
     private List<MembershipSubscription> membershipSubscriptions;
+
+    @ManyToMany
+    private Set<Permission> permissions;
 }
