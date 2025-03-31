@@ -1,6 +1,6 @@
 package com.swp.project.service;
 
-//import com.paypal.base.rest.PayPalRESTException;
+import com.paypal.base.rest.PayPalRESTException;
 import com.swp.project.dto.request.MembershipPackageRequest;
 import com.swp.project.dto.response.MembershipPackageResponse;
 import com.swp.project.dto.response.MembershipSubscriptionResponse;
@@ -16,8 +16,8 @@ public interface IMembershipPackageService {
     List<MembershipPackageResponse> getAllMembershipPackages();
     void enableMembershipPackage(int id);
     void disableMembershipPackage(int id);
-    PaymentDTO createMembershipPayment(int membershipId);
-    String executeMembershipPayment(String paymentId, String payerId);
+    PaymentDTO createMembershipPayment(int membershipId) throws PayPalRESTException;
+    String executeMembershipPayment(String paymentId, String payerId) throws PayPalRESTException ;
 
     MembershipSubscriptionResponse getUserMembership();
 
