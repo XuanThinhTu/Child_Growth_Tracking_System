@@ -27,9 +27,7 @@ import java.util.stream.Collectors;
 public class GrowthTrackerService implements IGrowthTrackerService {
 
     private final GrowthTrackerRepository growthTrackerRepository;
-
     private final GrowthTrackerMapper growthTrackerMapper;
-
     private final ChildrenRepository childrenRepository;
 
     @Override

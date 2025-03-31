@@ -18,9 +18,7 @@ import java.time.LocalDateTime;
 public class NotificationService implements INotificationService {
 
     private final NotificationRepository notificationRepository;
-
     private final UserRepository userRepository;
-
     private final NotificationMapper notificationMapper;
 
     @Override
