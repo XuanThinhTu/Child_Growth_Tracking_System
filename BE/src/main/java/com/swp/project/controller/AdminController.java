@@ -3,6 +3,8 @@ package com.swp.project.controller;
 import com.swp.project.dto.response.ApiResponse;
 import com.swp.project.dto.response.ChildrenDTO;
 import com.swp.project.dto.response.ConsultationRequestDTO;
+import com.swp.project.dto.response.WorkingScheduleDTO;
+import com.swp.project.enums.WorkingScheduleStatus;
 import com.swp.project.service.IChildrenService;
 import com.swp.project.service.IConsultationRequestService;
 import com.swp.project.service.IFeedbackService;
@@ -37,24 +39,36 @@ public class AdminController {
     }
 
     @Operation(summary = "This API used for ADMIN assign a doctor to a consultation request has status PENDING")
-
     @PostMapping("/consultation/assign")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ApiResponse<ConsultationRequestDTO> assignForDoctor(@RequestParam int consultationRequestId, @RequestParam int doctorId){
+        ConsultationRequestDTO consultationRequestDTO = consultationRequestService.assignDoctor(consultationRequestId, doctorId);
+        return ApiResponse.<ConsultationRequestDTO>builder()
+                .message("Consultation request assigned to doctor")
+                .data(consultationRequestDTO)
+                .build();
+    }
+
+    @Operation(summary = "Get all working schedules by status. Only Admin can access")
+
+    @GetMapping("/working-schedule/list")
 
     @SecurityRequirement(name = "bearerAuth")
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
 
-    public ApiResponse<ConsultationRequestDTO> assignForDoctor(@RequestParam int consultationRequestId, @RequestParam int doctorId){
-        ConsultationRequestDTO consultationRequestDTO = consultationRequestService.assignDoctor(consultationRequestId, doctorId);
+    public ApiResponse<List<WorkingScheduleDTO>>
 
-        return ApiResponse.<ConsultationRequestDTO>builder()
+    getAllSchedulesByStatus(@RequestParam(name = "status", defaultValue = "DRAFT") WorkingScheduleStatus status) {
 
-                .message("Consultation request assigned to doctor")
+        return ApiResponse.<List<WorkingScheduleDTO>>builder()
 
-                .data(consultationRequestDTO)
+                .message("List working schedule")
+
+                .data(workingScheduleService.getSchedulesByStatus(status))
 
                 .build();
-
     }
 
 
