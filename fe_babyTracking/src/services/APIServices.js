@@ -332,6 +332,54 @@ export const getNewWorkingShiftDraft = async (doctorId, dates, number) => {
   }
 };
 
+export const getSubmittedShift = async (doctorId) => {
+  try {
+    const result = await axios.get(
+      `${baseUrl}/working-schedule/doctor/${doctorId}?status=SUBMITTED`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return result.data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getApprovedShift = async (doctorId) => {
+  try {
+    const result = await axios.get(
+      `${baseUrl}/working-schedule/doctor/${doctorId}?status=APPROVED`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return result.data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getRejectedShift = async (doctorId) => {
+  try {
+    const result = await axios.get(
+      `${baseUrl}/working-schedule/doctor/${doctorId}?status=REJECTED`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return result.data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const submitWorkingShift = async (slots) => {
   try {
     const flattenedSlots = slots?.flat();
@@ -387,6 +435,58 @@ export const bookingMeeting = async (babyId, date, slotTimeId, note) => {
         },
       }
     );
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getMeetingInfo = async () => {
+  try {
+    const result = await axios.get(`${baseUrl}/booking/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return result.data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const cancelMeeting = async (meetingId) => {
+  try {
+    const result = await axios.put(`${baseUrl}/booking/${meetingId}/cancel`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const closeMeeting = async (meetingId) => {
+  try {
+    const result = await axios.put(`${baseUrl}/booking/${meetingId}/close`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const startMeeting = async (meetingId) => {
+  try {
+    const result = await axios.put(`${baseUrl}/booking/${meetingId}/process`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return result.data;
   } catch (error) {
     console.log(error);
@@ -504,6 +604,18 @@ export const getAllBlogs = async () => {
   }
 };
 
+export const getBlogDetail = async (blogId) => {
+  try {
+    const response = await axios.get(`${baseUrl}/blogs/get/${blogId}`);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data;
+    }
+    throw error;
+  }
+};
+
 export const getAllCategories = async () => {
   try {
     const response = await axios.get(`${baseUrl}/category/all`);
@@ -549,7 +661,7 @@ export const getAllSlotTimes = async () => {
   }
 };
 
-export const addNewSlotTimes = async (startTime, endTime) => {
+export const addNewSlotTimes = async (startTime, endTime, shifts) => {
   try {
     const slots = await getAllSlotTimes();
     const isDup = slots.some(
@@ -560,6 +672,7 @@ export const addNewSlotTimes = async (startTime, endTime) => {
     const data = {
       startTime: startTime,
       endTime: endTime,
+      shifts: shifts,
     };
     const result = await axios.post(`${baseUrl}/slot-time/add`, data, {
       headers: {
@@ -651,6 +764,33 @@ export const assignConsultation = async (doctorId, consultationId) => {
           Authorization: `Bearer ${token}`,
         },
       }
+    );
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const cancelConsultation = async (consultationId) => {
+  try {
+    const result = await axios.put(
+      `${baseUrl}/consultation/cancel/${consultationId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const closeConsultation = async (consultationId) => {
+  try {
+    const result = await axios.put(
+      `${baseUrl}/consultation/close/${consultationId}`
     );
     return result.data;
   } catch (error) {

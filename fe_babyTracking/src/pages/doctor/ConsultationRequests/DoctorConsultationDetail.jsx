@@ -104,7 +104,7 @@ export default function DoctorConsultationDetail({ requestData, onBack }) {
             );
           })}
         </div>
-        {status === "ASSIGNED" && (
+        {status === "PROCESSING" || status === "ASSIGNED" ? (
           <div className="flex gap-2">
             <input
               className="flex-1 border p-2 rounded"
@@ -119,8 +119,10 @@ export default function DoctorConsultationDetail({ requestData, onBack }) {
               Send
             </button>
           </div>
+        ) : (
+          <></>
         )}
-        {(status === "CLOSED" || status === "CANCELED") && (
+        {(status === "CLOSED" || status === "CANCELLED") && (
           <p className="text-gray-500 mt-2">
             This request is {status}. Read-only.
           </p>
