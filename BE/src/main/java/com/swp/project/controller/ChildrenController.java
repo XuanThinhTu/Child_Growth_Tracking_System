@@ -36,15 +36,37 @@ public class ChildrenController {
     @GetMapping("/info/{id}")
     @SecurityRequirement(name = "bearerAuth")
     public ApiResponse<ChildrenDTO> getChildrenById(@PathVariable int id){
-
-
         ChildrenDTO childrenDTO = childrenService.getChildrenById(id);
-
         return ApiResponse.<ChildrenDTO>builder()
                 .message("Children profile retrieved")
                 .data(childrenDTO)
                 .build();
     }
+
+
+
+
+    @Operation(summary = "Get all children of the authenticated user")
+    @GetMapping("/list")
+    @SecurityRequirement(name = "bearerAuth")
+    public ApiResponse<List<ChildrenDTO>> getChildrenByCurrentUser(){
+
+        List<ChildrenDTO> childrenDTOList = childrenService.getChildrenByAuthenticatedUser();
+
+        return ApiResponse.<List<ChildrenDTO>>builder()
+
+                .message("Children list retrieved")
+                .data(childrenDTOList)
+                .build();
+
+
+
+    }
+
+
+
+
+
 
 
 
