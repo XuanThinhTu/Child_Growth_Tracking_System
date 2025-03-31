@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const images = [
   "https://www.mamasandpapas.ie/cdn/shop/articles/cropped-Brand_Weaning_3_1440x810_crop_center.jpg?v=1602071300",
@@ -11,6 +12,7 @@ const images = [
 
 function CarouselHero() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigation = useNavigate();
 
   // Tự động chuyển slide mỗi 10 giây
   useEffect(() => {
@@ -37,8 +39,9 @@ function CarouselHero() {
         {images.map((image, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-700 ${index === currentIndex ? "opacity-100 z-10" : "opacity-0"
-              }`}
+            className={`absolute inset-0 transition-opacity duration-700 ${
+              index === currentIndex ? "opacity-100 z-10" : "opacity-0"
+            }`}
           >
             <img
               src={image}
@@ -59,9 +62,13 @@ function CarouselHero() {
             Supporting Every Step, Celebrating Every Growth
           </h1>
           <p className="text-lg md:text-xl mb-6">
-            BabyTracking helps parents easily monitor their child's development, ensuring each milestone is met with care and confidence.
+            BabyTracking helps parents easily monitor their child's development,
+            ensuring each milestone is met with care and confidence.
           </p>
-          <button className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded">
+          <button
+            className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded"
+            onClick={() => navigation("/blog")}
+          >
             READ MORE
           </button>
         </div>
