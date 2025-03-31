@@ -135,14 +135,7 @@ function UserLayout() {
                 </AuthMiddleware>
               }
             />
-            <Route
-              path="/doctor"
-              element={
-                <AuthMiddleware requiredRole="ROLE_USER">
-                  <DoctorPage />
-                </AuthMiddleware>
-              }
-            />
+            <Route path="/doctor" element={<DoctorPage />} />
             <Route
               path="/doctor/:doctorId"
               element={
@@ -151,30 +144,9 @@ function UserLayout() {
                 </AuthMiddleware>
               }
             />
-            <Route
-              path="/faq"
-              element={
-                <AuthMiddleware requiredRole="ROLE_USER">
-                  <FAQPage />
-                </AuthMiddleware>
-              }
-            />
-            <Route
-              path="/blog"
-              element={
-                <AuthMiddleware requiredRole="ROLE_USER">
-                  <Blog />
-                </AuthMiddleware>
-              }
-            />
-            <Route
-              path="/blog/:id"
-              element={
-                <AuthMiddleware requiredRole="ROLE_USER">
-                  <BlogDetail />
-                </AuthMiddleware>
-              }
-            />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:id" element={<BlogDetail />} />
           </Routes>
         </div>
       ) : (
