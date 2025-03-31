@@ -48,4 +48,12 @@ public class CategoryController {
                 .build();
     }
 
+    @GetMapping("/all")
+    public ApiResponse<List<CategoryDTO>> getAllCategories() {
+        return ApiResponse.<List<CategoryDTO>>builder()
+                .message("Successfully retrieved all categories")
+                .data(categoryService.getAllCategory())
+                .build();
+    }
+
 }
