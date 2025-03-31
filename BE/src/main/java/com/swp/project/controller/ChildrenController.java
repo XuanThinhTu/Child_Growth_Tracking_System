@@ -57,24 +57,23 @@ public class ChildrenController {
     @PutMapping("/update/{id}")
     @SecurityRequirement(name = "bearerAuth")
     public ApiResponse<ChildrenDTO> updateChildren(
-
             @PathVariable int id,
-
             @RequestParam("name") String name,
-
             @RequestParam("birthDate") String birthDate,
-
             @RequestParam("gender") String gender){
-
         ChildrenDTO childrenDTO = childrenService.updateChildren(id, name, birthDate, gender);
-
         return ApiResponse.<ChildrenDTO>builder()
                 .message("Children updated")
                 .data(childrenDTO)
                 .build();
     }
 
-
-
-
+    @DeleteMapping("/delete/{id}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ApiResponse<Void> deleteChildren(@PathVariable int id){
+        childrenService.deleteChildren(id);
+        return ApiResponse.<Void>builder()
+                .message("Children deleted")
+                .build();
+    }
 }
