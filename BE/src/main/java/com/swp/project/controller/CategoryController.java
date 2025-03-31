@@ -19,24 +19,28 @@ public class CategoryController {
     private final ICategoryService categoryService;
 
     @PostMapping("/create")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ApiResponse<CategoryDTO> createCategory(@RequestBody CategoryCreationRequest request) {
+        return ApiResponse.<CategoryDTO>builder()
+                .message("Successfully created category")
+                .data(categoryService.createCategory(request))
+                .build();
+    }
+
+
+    @PutMapping("/update/{id}")
 
     @SecurityRequirement(name = "bearerAuth")
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
 
-    public ApiResponse<CategoryDTO> createCategory(@RequestBody CategoryCreationRequest request) {
-
+    public ApiResponse<CategoryDTO> update(@PathVariable int id,@RequestBody CategoryCreationRequest updateRequest) {
         return ApiResponse.<CategoryDTO>builder()
-
-                .message("Successfully created category")
-
-                .data(categoryService.createCategory(request))
-
+                .message("Successfully update category")
+                .data(categoryService.updateCategory(id, updateRequest))
                 .build();
-
     }
-
-
 
 
 
