@@ -7,7 +7,6 @@ import {
   Navigate,
 } from "react-router-dom";
 import toast from "react-hot-toast";
-import App from "../App";
 import AdminHomePage from "../pages/admin/AdminHomePage/AdminHomePage";
 import HomePage from "../pages/user/Home/index";
 import SignIn from "../pages/user/Auth/Login";
@@ -30,6 +29,24 @@ import VerifyAccount from "../pages/user/Auth/Register/VerifyAccount";
 import PaymentCallback from "../pages/user/PaypalPayment/PaymentCallback";
 import Blog from "../pages/user/Blog/Blog";
 import BlogDetail from "../pages/user/Blog/BlogDetail";
+
+const AuthMiddleware = ({ children, requiredRole }) => {
+  const role = sessionStorage.getItem("role");
+  const token = sessionStorage.getItem("token");
+
+  if (!token) {
+    toast.error("Vui lòng đăng nhập!");
+    return <Navigate to="/login" replace />;
+  }
+
+  if (requiredRole && role !== requiredRole) {
+    toast.error("Access denied!");
+    sessionStorage.clear();
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
 
 function UserLayout() {
   const location = useLocation();
@@ -69,30 +86,108 @@ function UserLayout() {
             <Route path="/register" element={<SignUp />} />
             <Route path="/verify" element={<VerifyAccount />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/my-family" element={<MyFamily />} />
-            <Route path="/baby-details/:babyId" element={<BabyOverview />} />
-            <Route path="/add-baby-info/:babyId" element={<AddBabyInfo />} />
-            <Route path="/booking-meeting/:babyId" element={<BookingPage />} />
+            <Route
+              path="/my-family"
+              element={
+                <AuthMiddleware requiredRole="ROLE_USER">
+                  <MyFamily />
+                </AuthMiddleware>
+              }
+            />
+            <Route
+              path="/baby-details/:babyId"
+              element={
+                <AuthMiddleware requiredRole="ROLE_USER">
+                  <BabyOverview />
+                </AuthMiddleware>
+              }
+            />
+            <Route
+              path="/add-baby-info/:babyId"
+              element={
+                <AuthMiddleware requiredRole="ROLE_USER">
+                  <AddBabyInfo />
+                </AuthMiddleware>
+              }
+            />
+            <Route
+              path="/booking-meeting/:babyId"
+              element={
+                <AuthMiddleware requiredRole="ROLE_USER">
+                  <BookingPage />
+                </AuthMiddleware>
+              }
+            />
             <Route path="/paypal/success" element={<PaymentCallback />} />
             <Route
               path="/consultation-request/:babyId"
-              element={<ConsultationRequest />}
+              element={
+                <AuthMiddleware requiredRole="ROLE_USER">
+                  <ConsultationRequest />
+                </AuthMiddleware>
+              }
             />
             <Route
               path="/consultation-detail/:id"
-              element={<ConsultationDetail />}
+              element={
+                <AuthMiddleware requiredRole="ROLE_USER">
+                  <ConsultationDetail />
+                </AuthMiddleware>
+              }
             />
-            <Route path="/doctor" element={<DoctorPage />} />
-            <Route path="/doctor/:doctorId" element={<DoctorDetail />} />
-            <Route path="/faq" element={<FAQPage />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:id" element={<BlogDetail />} />
+            <Route
+              path="/doctor"
+              element={
+                <AuthMiddleware requiredRole="ROLE_USER">
+                  <DoctorPage />
+                </AuthMiddleware>
+              }
+            />
+            <Route
+              path="/doctor/:doctorId"
+              element={
+                <AuthMiddleware requiredRole="ROLE_USER">
+                  <DoctorDetail />
+                </AuthMiddleware>
+              }
+            />
+            <Route
+              path="/faq"
+              element={
+                <AuthMiddleware requiredRole="ROLE_USER">
+                  <FAQPage />
+                </AuthMiddleware>
+              }
+            />
+            <Route
+              path="/blog"
+              element={
+                <AuthMiddleware requiredRole="ROLE_USER">
+                  <Blog />
+                </AuthMiddleware>
+              }
+            />
+            <Route
+              path="/blog/:id"
+              element={
+                <AuthMiddleware requiredRole="ROLE_USER">
+                  <BlogDetail />
+                </AuthMiddleware>
+              }
+            />
           </Routes>
         </div>
       ) : (
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/membership" element={<MembershipPage />} />
+          <Route
+            path="/membership"
+            element={
+              <AuthMiddleware requiredRole="ROLE_USER">
+                <MembershipPage />
+              </AuthMiddleware>
+            }
+          />
         </Routes>
       )}
       <MainFooter />
@@ -100,36 +195,23 @@ function UserLayout() {
   );
 }
 
-const ProtectedRoute = ({ children, requiredRole }) => {
-  const role = sessionStorage.getItem("role");
-  if (role !== requiredRole) {
-    toast.error("Access denied!");
-    return <Navigate to="/" replace />;
-  }
-  return children;
-};
-
 function AdminLayout() {
   return (
-    <ProtectedRoute requiredRole="ROLE_ADMIN">
-      <div className="w-full min-h-screen bg-gray-100">
-        <Routes>
-          <Route path="/" element={<AdminHomePage />} />
-        </Routes>
-      </div>
-    </ProtectedRoute>
+    <div className="w-full min-h-screen bg-gray-100">
+      <Routes>
+        <Route path="/" element={<AdminHomePage />} />
+      </Routes>
+    </div>
   );
 }
 
 function DoctorLayout() {
   return (
-    <ProtectedRoute requiredRole="ROLE_DOCTOR">
-      <div className="w-full min-h-screen bg-gray-100">
-        <Routes>
-          <Route path="/" element={<DoctorDashboard />} />
-        </Routes>
-      </div>
-    </ProtectedRoute>
+    <div className="w-full min-h-screen bg-gray-100">
+      <Routes>
+        <Route path="/" element={<DoctorDashboard />} />
+      </Routes>
+    </div>
   );
 }
 
@@ -138,8 +220,22 @@ function AppRouter() {
     <Router>
       <Routes>
         <Route path="/*" element={<UserLayout />} />
-        <Route path="/admin" element={<AdminLayout />} />
-        <Route path="/doctor-dashboard" element={<DoctorLayout />} />
+        <Route
+          path="/admin"
+          element={
+            <AuthMiddleware requiredRole="ROLE_ADMIN">
+              <AdminLayout />
+            </AuthMiddleware>
+          }
+        />
+        <Route
+          path="/doctor-dashboard"
+          element={
+            <AuthMiddleware requiredRole="ROLE_DOCTOR">
+              <DoctorLayout />
+            </AuthMiddleware>
+          }
+        />
       </Routes>
     </Router>
   );

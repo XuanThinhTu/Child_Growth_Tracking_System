@@ -231,7 +231,7 @@ export const addBabyGrowthData = async (
 
 export const getBoyStandardIndex = async () => {
   try {
-    const result = await axios.get(`${baseUrl}/api/standard-index/pro`);
+    const result = await axios.get(`${baseUrl}/api/standard-index`);
     const standard = result.data.data;
     const boyStandard = standard.filter((item) => item.gender === "boys");
     return boyStandard;
@@ -242,7 +242,7 @@ export const getBoyStandardIndex = async () => {
 
 export const getGirlStandardIndex = async () => {
   try {
-    const result = await axios.get(`${baseUrl}/api/standard-index/pro`);
+    const result = await axios.get(`${baseUrl}/api/standard-index`);
     const standard = result.data.data;
     const girlStandard = standard.filter((item) => item.gender === "girl");
     return girlStandard;
