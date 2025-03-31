@@ -247,17 +247,18 @@ const HeadCirChart = ({ babyId }) => {
           />
         )}
 
-        {predictData.length > 0 && (
-          <Line
-            type="monotone"
-            dataKey="predictHeadCir"
-            data={predictData}
-            stroke="gray"
-            dot={{ r: 4 }}
-            activeDot={{ r: 6 }}
-            isAnimationActive={false}
-          />
-        )}
+{predictData.length > 0 && (
+  <Line
+    type="monotone"
+    dataKey="predictHeadCir"
+    data={predictData}
+    stroke="gray"
+    dot={{ r: 4 }}
+    activeDot={{ r: 6 }}
+    isAnimationActive={false}
+    strokeDasharray="5 5" 
+  />
+)}
       </LineChart>
     </ResponsiveContainer>
   );
