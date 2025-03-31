@@ -492,7 +492,6 @@ export const createBlog = async (formData) => {
   }
 };
 
-// get all blogs
 export const getAllBlogs = async () => {
   try {
     const response = await axios.get(`${baseUrl}/blogs/all`);
@@ -505,7 +504,6 @@ export const getAllBlogs = async () => {
   }
 };
 
-// Get All Categories
 export const getAllCategories = async () => {
   try {
     const response = await axios.get(`${baseUrl}/category/all`);
@@ -515,6 +513,16 @@ export const getAllCategories = async () => {
       throw error.response.data;
     }
     throw error;
+  }
+};
+
+export const getAllFAQs = async () => {
+  try {
+    const result = await axios.get(`${baseUrl}/faq`);
+    console.log(result.data);
+    return result.data.data;
+  } catch (error) {
+    console.log(error);
   }
 };
 
