@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Service
@@ -44,16 +45,21 @@ public class FeedbackService implements IFeedbackService {
 
     @Override
     public Page<FeedbackDTO> getAllFeedbacks(int page, int size) {
-
         PageRequest pageRequest = PageRequest.of(page, size);
-
         Page<Feedback> feedbacks = feedbackRepository.findAll(pageRequest);
-
         return feedbacks.map(feedbackMapper::toFeedbackDTO);
-
     }
 
+    @Override
+    public List<FeedbackDTO> getAllFeedbacksByDoctorID(int doctorId) {
 
+
+        List<Feedback> feedbacks = feedbackRepository.findByDoctorId(doctorId);
+
+
+
+        return feedbacks.stream().map(feedbackMapper::toFeedbackDTO).toList();
+    }
 
 
 
