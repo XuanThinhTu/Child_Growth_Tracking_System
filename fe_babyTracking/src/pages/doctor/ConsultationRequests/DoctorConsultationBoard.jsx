@@ -7,10 +7,10 @@ import {
 import KanbanCard from "./KanbanCard";
 
 export default function DoctorConsultationBoard({ requests, onSelectRequest }) {
-  const pendingList = requests?.filter((r) => r.status === "PENDING");
-  const processingList = requests?.filter((r) => r.status === "ASSIGNED");
+  const assignedList = requests?.filter((r) => r.status === "ASSIGNED");
+  const processingList = requests?.filter((r) => r.status === "PROCESSING");
   const closedList = requests?.filter(
-    (r) => r.status === "CLOSED" || r.status === "CANCELED"
+    (r) => r.status === "CLOSED" || r.status === "CANCELLED"
   );
 
   return (
@@ -21,10 +21,10 @@ export default function DoctorConsultationBoard({ requests, onSelectRequest }) {
         <div className="bg-gray-100 p-4 rounded shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <ClockIcon className="h-5 w-5 text-yellow-500" />
-            <h3 className="text-lg font-semibold">Pending</h3>
+            <h3 className="text-lg font-semibold">Assigned</h3>
           </div>
           <div className="space-y-2">
-            {pendingList?.map((req) => (
+            {assignedList?.map((req) => (
               <KanbanCard
                 key={req.id}
                 consultation={req}

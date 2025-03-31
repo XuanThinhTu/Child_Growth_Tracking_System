@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   addNewConsultationReply,
+  cancelConsultation,
+  closeConsultation,
   getConsultationReplies,
   getUserConsultation,
 } from "../../../../services/APIServices";
@@ -57,6 +59,34 @@ export default function ConsultationDetail() {
         navigate(`/consultation-request/${consultation.child.id}`);
       } else {
         toast.error("Response failed! Please try again!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCancelConsultation = async () => {
+    try {
+      const result = await cancelConsultation(parseInt(id));
+      if (result) {
+        toast.success("Cancel consultation success!");
+        navigate(`/consultation-request/${consultation.child.id}`);
+      } else {
+        toast.error("Cancel consultation failed!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCloseConsultation = async () => {
+    try {
+      const result = await closeConsultation(parseInt(id));
+      if (result) {
+        toast.success("Consultation closed success!");
+        navigate(`/consultation-request/${consultation.child.id}`);
+      } else {
+        toast.error("Consultation closed failed!");
       }
     } catch (error) {
       console.log(error);
@@ -124,7 +154,7 @@ export default function ConsultationDetail() {
         </div>
 
         {/* Forum-like UI */}
-        {status === "ASSIGNED" && (
+        {status === "PROCESSING" && (
           <div className="mt-8">
             <h3 className="text-lg font-semibold mb-4 text-gray-700">
               Discussion
@@ -166,6 +196,15 @@ export default function ConsultationDetail() {
                 Send
               </button>
             </div>
+
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={() => handleCloseConsultation()}
+                className="w-full sm:w-auto px-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+              >
+                Done Consultation
+              </button>
+            </div>
           </div>
         )}
 
@@ -198,16 +237,19 @@ export default function ConsultationDetail() {
           </div>
         ) : null}
 
-        {status === "Pending" && (
+        {status === "PENDING" && (
           <div className="mt-8">
             <p className="text-gray-500">
               This request is still pending. No discussion available yet.
             </p>
-            {/* Button to 'Process'? 
-                <button className="mt-4 bg-yellow-500 px-3 py-2 text-white rounded">
-                  Start Processing
-                </button> 
-            */}
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={() => handleCancelConsultation()}
+                className="w-full sm:w-auto px-6 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition duration-300"
+              >
+                Cancel Consultation
+              </button>
+            </div>
           </div>
         )}
       </div>

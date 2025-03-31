@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Modal, Select, Tag } from "antd";
+import { Table, Button, Modal, Select, Tag, List, Typography } from "antd";
 import {
   assignConsultation,
   getAllConsultations,
   getAllDoctors,
+  getConsultationReplies,
 } from "../../../services/APIServices";
 import toast from "react-hot-toast";
 
 const { Option } = Select;
+const { Text } = Typography;
 
 const ConsultationRequests = () => {
   const [doctors, setDoctors] = useState([]);
@@ -15,6 +17,8 @@ const ConsultationRequests = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+  const [replies, setReplies] = useState([]);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -42,6 +46,7 @@ const ConsultationRequests = () => {
   }, []);
 
   const handleAssignClick = (request) => {
+    setIsDetailModalVisible(false);
     setSelectedRequest(request);
     setIsModalVisible(true);
   };
@@ -50,7 +55,11 @@ const ConsultationRequests = () => {
     try {
       const result = await assignConsultation(selectedDoctor, selectedRequest);
       setIsModalVisible(false);
-      toast.success("Assigned success!");
+      if (result) {
+        toast.success("Assigned success!");
+      } else {
+        toast.error("Assigned failed!");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -63,6 +72,23 @@ const ConsultationRequests = () => {
       )
     );
   };
+
+  const handleDetailClick = (record) => {
+    setSelectedRequest(record);
+    setIsDetailModalVisible(true);
+  };
+
+  useEffect(() => {
+    const fetchConsultationReplies = async () => {
+      try {
+        const result = await getConsultationReplies(selectedRequest?.id);
+        setReplies(result);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchConsultationReplies();
+  }, [selectedRequest?.id]);
 
   const columns = [
     { title: "Id", dataIndex: "id", key: "id" },
@@ -85,6 +111,8 @@ const ConsultationRequests = () => {
             ? "orange"
             : status === "ASSIGNED"
             ? "blue"
+            : status === "PROCESSING"
+            ? "green"
             : "red";
         return <Tag color={color}>{status}</Tag>;
       },
@@ -98,23 +126,21 @@ const ConsultationRequests = () => {
     {
       title: "Action",
       key: "action",
-      render: (_, record) => {
-        if (record.status === "PENDING") {
-          return (
+      render: (_, record) => (
+        <div style={{ display: "flex", gap: "8px" }}>
+          {record.status === "PENDING" && (
             <Button type="primary" onClick={() => handleAssignClick(record.id)}>
               Assign
             </Button>
-          );
-        }
-        if (record.status === "ASSIGNED") {
-          return (
+          )}
+          {(record.status === "PROCESSING" || record.status === "ASSIGNED") && (
             <Button danger onClick={() => handleCancelRequest(record.id)}>
               Cancel
             </Button>
-          );
-        }
-        return null;
-      },
+          )}
+          <Button onClick={() => handleDetailClick(record)}>View</Button>
+        </div>
+      ),
     },
   ];
 
@@ -126,6 +152,50 @@ const ConsultationRequests = () => {
       <Table columns={columns} dataSource={initialData} rowKey="id" />
 
       <Modal
+        title="Consultation Details"
+        open={isDetailModalVisible}
+        onCancel={() => setIsDetailModalVisible(false)}
+        footer={null}
+      >
+        {selectedRequest && (
+          <>
+            <p>
+              <strong>Request Id:</strong> {selectedRequest.id}
+            </p>
+            <p>
+              <strong>Baby Name:</strong> {selectedRequest.child?.name}
+            </p>
+            <p>
+              <strong>Doctor:</strong>{" "}
+              {selectedRequest.doctorName || "Not Assigned"}
+            </p>
+            <p>
+              <strong>Request Title:</strong> {selectedRequest.requestTitle}
+            </p>
+            <p>
+              <strong>Note:</strong> {selectedRequest.note}
+            </p>
+          </>
+        )}
+
+        <h3 style={{ marginTop: 20 }}>Chat History</h3>
+        <List
+          bordered
+          dataSource={replies}
+          renderItem={(item) => (
+            <List.Item>
+              <div>
+                <Text type="secondary">
+                  {new Date(item.createdAt).toLocaleString()}
+                </Text>
+                <p style={{ margin: 0 }}>{item.content}</p>
+              </div>
+            </List.Item>
+          )}
+        />
+      </Modal>
+
+      <Modal
         title="Assign Doctor"
         open={isModalVisible}
         onOk={handleAssignDoctor}
@@ -133,7 +203,7 @@ const ConsultationRequests = () => {
       >
         <p style={{ marginBottom: "10px", fontWeight: 500 }}>
           {" "}
-          Request Id: {selectedRequest}
+          Request Id: {selectedRequest?.id}
         </p>
         <Select
           style={{ width: "100%" }}

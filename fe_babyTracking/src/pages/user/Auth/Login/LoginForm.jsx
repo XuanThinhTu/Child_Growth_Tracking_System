@@ -1,23 +1,23 @@
 import { useNavigate } from "react-router-dom";
-import LinkToGoogle from "../Google/LinkToGoogle";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Button, Spin } from "antd"; // Import Ant Design Spinner
 import {
   getUserInformation,
   loginFucntion,
   getMyMembershipPackage,
 } from "../../../../services/APIServices";
 import toast from "react-hot-toast";
+import LinkToGoogle from "../Google/LinkToGoogle";
 
 const LoginForm = () => {
   const navigation = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Basic email regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const fetchLogin = async () => {
-    // 1. Client-side validation
     if (!email) {
       toast.error("Email is required!");
       return;
@@ -31,6 +31,7 @@ const LoginForm = () => {
       return;
     }
 
+    setLoading(true); // Bắt đầu loading
     try {
       const result = await loginFucntion(email, password);
       const token = result?.data?.accessToken;
@@ -38,32 +39,25 @@ const LoginForm = () => {
       if (token) {
         // Save token to session
         sessionStorage.setItem("token", token);
-
-        // Fetch user info
         const userInfo = await getUserInformation();
         sessionStorage.setItem("userId", userInfo.data?.id);
-        toast.success("Login successful!");
+        sessionStorage.setItem("role", userInfo.data?.role);
+        toast.success("Login success!");
 
-        // Check user role
         if (userInfo.data?.role === "ROLE_ADMIN") {
           navigation("/admin");
         } else if (userInfo.data?.role === "ROLE_DOCTOR") {
           navigation("/doctor-dashboard");
         } else {
-          // Normal user -> Check membership
           try {
             const membershipRes = await getMyMembershipPackage();
             if (membershipRes.success && membershipRes.data) {
-              // Check membership status
               if (membershipRes.data.status === "AVAILABLE") {
-                // User already has membership
                 navigation("/");
               } else {
-                // Membership not available
                 navigation("/membership");
               }
             } else {
-              // No membership
               navigation("/membership");
             }
           } catch (err) {
@@ -73,9 +67,9 @@ const LoginForm = () => {
         }
       }
     } catch (error) {
-      // Server or network error
       toast.error(error?.message || "Login failed");
     }
+    setLoading(false); // Dừng loading
   };
 
   return (
@@ -123,13 +117,16 @@ const LoginForm = () => {
           </div>
 
           <div className="mt-8 flex flex-col gap-y-4">
-            <button
+            <Button
               type="button"
-              className="py-4 bg-green-500 rounded-xl text-white font-bold text-lg"
+              size="large"
+              loading={loading}
+              disabled={loading}
+              className="bg-green-500 w-full h-14 rounded-xl text-white font-bold text-lg flex items-center justify-center"
               onClick={fetchLogin}
             >
-              Log In
-            </button>
+              {loading ? <span className="ml-2">Logging in...</span> : "Log In"}
+            </Button>
 
             <div>
               <LinkToGoogle headline="Log in with Google" />

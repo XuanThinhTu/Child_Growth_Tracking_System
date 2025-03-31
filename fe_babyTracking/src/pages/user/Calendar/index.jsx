@@ -12,11 +12,15 @@ import {
 } from "@heroicons/react/outline";
 import {
   bookingMeeting,
+  cancelMeeting,
   getAllSlotTimes,
   getApprovedList,
   getBabyInfo,
+  getMeetingInfo,
 } from "../../../services/APIServices";
 import toast from "react-hot-toast";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const DAY_NAMES = [
   "Sunday",
@@ -59,9 +63,8 @@ export default function BookingPage() {
   const [baby, setBaby] = useState(null);
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-
   const [duration] = useState("30 min");
-
+  const [meetingList, setMeetingList] = useState([]);
   const [selectedDay, setSelectedDay] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [meetingNote, setMeetingNote] = useState("");
@@ -73,6 +76,7 @@ export default function BookingPage() {
     selectedDay && availableDays.map(Number).includes(selectedDay.day);
   const [approvedList, setApprovedList] = useState([]);
   const [allSlotTimes, setAllSlotTimes] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const formatSelectedDay = () => {
     if (!selectedDay) return "";
@@ -110,6 +114,18 @@ export default function BookingPage() {
       }
     };
     fetchSlotTimes();
+  }, []);
+
+  useEffect(() => {
+    const fetchBookingList = async () => {
+      try {
+        const result = await getMeetingInfo();
+        setMeetingList(result);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchBookingList();
   }, []);
 
   useEffect(() => {
@@ -162,8 +178,7 @@ export default function BookingPage() {
 
   const handleBack = () => {
     if (step === 1) {
-      // Ở Step 1, back về trang Home (hoặc console.log)
-      console.log("Back to home or parent page");
+      navigate(`/baby-details/${babyId}`);
     } else if (step === 2) {
       // Step 2 => quay lại Step 1
       setStep(1);
@@ -183,6 +198,7 @@ export default function BookingPage() {
   const handleSchedule = async () => {
     const [date, slotTimeId, index] = selectedKey.split("/");
 
+    setLoading(true);
     try {
       const result = await bookingMeeting(
         babyId,
@@ -199,6 +215,21 @@ export default function BookingPage() {
     } catch (error) {
       console.log(error);
     }
+    setLoading(false);
+  };
+
+  const handleCancelMeeting = async (meetingId) => {
+    try {
+      const result = await cancelMeeting(meetingId);
+      if (result) {
+        toast.success("Cancel meeting success!");
+        handleBack();
+      } else {
+        toast.error("Cancel meeting failed!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const endTime = selectedTime ? getEndTime(selectedTime, duration) : "";
@@ -210,7 +241,6 @@ export default function BookingPage() {
         <div className="flex flex-col md:flex-row gap-6">
           {/* Cột trái (1/3) */}
           <div className="md:w-1/3 bg-white border border-gray-300 p-6 flex flex-col items-center text-center space-y-4 rounded shadow-sm relative">
-            {/* Nút Back icon ở góc trên trái */}
             <button
               onClick={handleBack}
               className="absolute top-3 left-3 text-blue-500 hover:underline flex items-center"
@@ -219,20 +249,74 @@ export default function BookingPage() {
               Back
             </button>
 
-            <img
-              src="https://media.istockphoto.com/id/1340883379/photo/young-doctor-hospital-medical-medicine-health-care-clinic-office-portrait-glasses-man.jpg?s=612x612&w=0&k=20&c=_H4VUPBkS0gEj5ZdZzQo-Hw3lMuyofJpB-P9yS92Wyw="
-              alt="Doctor Avatar"
-              className="w-24 h-24 rounded-full shadow"
-            />
-            <h1 className="text-2xl font-bold text-gray-800">
-              Dr. Dubby Rosner
-            </h1>
-            <p className="text-sm text-gray-500 italic">Senior Pediatrician</p>
+            {/* Hiển thị cuộc hẹn mới nhất (nếu có) */}
+            {meetingList.length > 0 ? (
+              <>
+                <div className="w-full mt-4">
+                  <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                    All Appointments
+                  </h2>
+                  <ul className="space-y-2">
+                    {meetingList
+                      .filter((item) => item.status !== "CLOSED")
+                      .map((meeting) => (
+                        <li
+                          key={meeting.id}
+                          className="p-3 border rounded flex flex-col justify-between"
+                        >
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="text-sm font-semibold">
+                                {meeting.date} <br />
+                                {meeting.startTime} - {meeting.endTime}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {meeting.childName} ({meeting.childGender})
+                              </p>
+                            </div>
+                            <span
+                              className={`px-2 py-1 rounded text-xs ${
+                                meeting.status === "PROCESSING"
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : meeting.status === "COMPLETED"
+                                  ? "bg-green-100 text-green-700"
+                                  : "bg-red-100 text-red-700"
+                              }`}
+                            >
+                              {meeting.status}
+                            </span>
+                          </div>
 
-            <div className="bg-blue-50 w-full p-4 rounded-lg shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-700">Meeting</h2>
-              <p className="text-gray-600">{duration} session</p>
-            </div>
+                          {meeting.status === "PROCESSING" &&
+                            meeting.meetingLink && (
+                              <div className="mt-2">
+                                <a
+                                  href={meeting.meetingLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 underline"
+                                >
+                                  Join Google Meet
+                                </a>
+                              </div>
+                            )}
+
+                          {meeting.status === "PENDING" && (
+                            <button
+                              onClick={() => handleCancelMeeting(meeting?.id)}
+                              className="mt-2 px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600 transition"
+                            >
+                              Cancel
+                            </button>
+                          )}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              </>
+            ) : (
+              <p className="text-gray-500 italic">No upcoming appointments.</p>
+            )}
           </div>
 
           {/* Cột phải (2/3) */}
@@ -380,7 +464,16 @@ export default function BookingPage() {
               onClick={handleSchedule}
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
-              Schedule Event
+              {loading ? (
+                <>
+                  <Spin indicator={<LoadingOutlined spin />} />{" "}
+                  <span>Booking...</span>
+                </>
+              ) : (
+                <>
+                  <span>Schedule Event</span>
+                </>
+              )}
             </button>
           </div>
         </div>
