@@ -8,5 +8,5 @@ public interface IFAQService {
 
     List<FAQResponse> getAllFAQ();
     FAQResponse createFAQ(FAQRequest request);
-
+    FAQResponse updateFAQ(int fqaId ,FAQRequest request);
 }
