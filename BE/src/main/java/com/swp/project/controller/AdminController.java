@@ -1,9 +1,6 @@
 package com.swp.project.controller;
 
-import com.swp.project.dto.response.ApiResponse;
-import com.swp.project.dto.response.ChildrenDTO;
-import com.swp.project.dto.response.ConsultationRequestDTO;
-import com.swp.project.dto.response.WorkingScheduleDTO;
+import com.swp.project.dto.response.*;
 import com.swp.project.enums.WorkingScheduleStatus;
 import com.swp.project.service.IChildrenService;
 import com.swp.project.service.IConsultationRequestService;
@@ -12,6 +9,7 @@ import com.swp.project.service.IWorkingScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,4 +81,27 @@ public class AdminController {
                 .message("Working schedule rejected")
                 .build();
     }
+
+    @Operation(summary = "Get all children. Only Admin can access")
+    @GetMapping("/children")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ApiResponse<Page<ChildrenDTO>> getAllChildren(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ApiResponse.<Page<ChildrenDTO>>builder()
+                .message("List children")
+                .data(childrenService.getAllChildren(page, size))
+                .build();
+    }
+
+    @Operation(summary = "Get All Feedback for Admin")
+    @GetMapping("/feedbacks")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ApiResponse<?> getAllFeedback(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+        return ApiResponse.<Page<FeedbackDTO>>builder()
+                .data(feedbackService.getAllFeedbacks(page, size))
+                .message("List Feedback")
+                .build();
+    }
+
 }
