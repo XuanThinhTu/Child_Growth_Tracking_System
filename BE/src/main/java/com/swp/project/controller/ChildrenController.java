@@ -43,30 +43,36 @@ public class ChildrenController {
                 .build();
     }
 
-
-
-
     @Operation(summary = "Get all children of the authenticated user")
     @GetMapping("/list")
     @SecurityRequirement(name = "bearerAuth")
     public ApiResponse<List<ChildrenDTO>> getChildrenByCurrentUser(){
-
         List<ChildrenDTO> childrenDTOList = childrenService.getChildrenByAuthenticatedUser();
-
         return ApiResponse.<List<ChildrenDTO>>builder()
-
                 .message("Children list retrieved")
                 .data(childrenDTOList)
                 .build();
-
-
-
     }
 
+    @PutMapping("/update/{id}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ApiResponse<ChildrenDTO> updateChildren(
 
+            @PathVariable int id,
 
+            @RequestParam("name") String name,
 
+            @RequestParam("birthDate") String birthDate,
 
+            @RequestParam("gender") String gender){
+
+        ChildrenDTO childrenDTO = childrenService.updateChildren(id, name, birthDate, gender);
+
+        return ApiResponse.<ChildrenDTO>builder()
+                .message("Children updated")
+                .data(childrenDTO)
+                .build();
+    }
 
 
 
