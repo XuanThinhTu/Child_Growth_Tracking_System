@@ -52,21 +52,7 @@ public class FeedbackService implements IFeedbackService {
 
     @Override
     public List<FeedbackDTO> getAllFeedbacksByDoctorID(int doctorId) {
-
-
         List<Feedback> feedbacks = feedbackRepository.findByDoctorId(doctorId);
-
-
-
         return feedbacks.stream().map(feedbackMapper::toFeedbackDTO).toList();
     }
-
-
-
-
-
-
-
-
-
 }
