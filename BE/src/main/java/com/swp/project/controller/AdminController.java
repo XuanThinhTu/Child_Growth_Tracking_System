@@ -1,15 +1,13 @@
 package com.swp.project.controller;
 
-import com.swp.project.dto.response.*;
-import com.swp.project.enums.WorkingScheduleStatus;
+import com.swp.project.dto.response.ApiResponse;
+import com.swp.project.dto.response.ChildrenDTO;
 import com.swp.project.service.IChildrenService;
 import com.swp.project.service.IConsultationRequestService;
 import com.swp.project.service.IFeedbackService;
 import com.swp.project.service.IWorkingScheduleService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,5 +23,15 @@ public class AdminController {
     private final IWorkingScheduleService workingScheduleService;
     private final IFeedbackService feedbackService;
 
+    @GetMapping("/children/{parentId}")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ApiResponse<List<ChildrenDTO>> getChildrenByParentId(@PathVariable int parentId){
+        List<ChildrenDTO> childrenDTOList = childrenService.getChildrenByParentId(parentId);
+        return ApiResponse.<List<ChildrenDTO>>builder()
+                .message("Children list retrieved")
+                .data(childrenDTOList)
+                .build();
+    }
 
 }
