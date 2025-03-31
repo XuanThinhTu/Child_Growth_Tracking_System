@@ -25,20 +25,22 @@ public class FAQController {
     }
 
     @PostMapping
-//    @SecurityRequirement(name = "bearerAuth")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<?>> createFAQs(@RequestBody FAQRequest request) {
-
         return ResponseEntity.ok(
-
                 ApiResponse.builder()
-
                         .message("List of FAQs")
-
                         .data(faqService.createFAQ(request))
-
                         .build()
+        );
+    }
 
+    @PutMapping("/{faqId}")
+    public ResponseEntity<ApiResponse<?>> updateFAQs(@PathVariable int faqId, @RequestBody FAQRequest request) {
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .message("List of FAQs")
+                        .data(faqService.updateFAQ(faqId, request))
+                        .build()
         );
     }
 
