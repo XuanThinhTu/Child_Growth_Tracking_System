@@ -20,7 +20,6 @@ import static com.swp.project.util.Converter.convertToDouble;
 public class StandardIndexService implements IStandardIndexService {
 
     private final BmiStandardsRepository bmiStandardsRepository;
-
     private final StandardIndexMapper standardIndexMapper;
 
     @Cacheable("standards")

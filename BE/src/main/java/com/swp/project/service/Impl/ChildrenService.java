@@ -24,8 +24,6 @@ public class ChildrenService implements IChildrenService {
     private final ChildrenRepository childrenRepository;
     private final UserService userService;
 
-
-
     @Override
     public List<ChildrenDTO> getChildrenByAuthenticatedUser() {
         User user = userService.getAuthenticatedUser();
