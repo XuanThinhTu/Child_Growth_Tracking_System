@@ -1,7 +1,7 @@
 package com.swp.project.controller;
 
 import com.swp.project.dto.response.ApiResponse;
-import com.swp.project.dto.response.ConsultationResponseCreation;
+import com.swp.project.dto.request.ConsultationResponseCreation;
 import com.swp.project.dto.response.ConsultationResponseDTO;
 import com.swp.project.service.IConsultationResponseService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -25,20 +25,6 @@ public class ConsultationResponseController {
                 .data(consultationResponseService.addConsultationResponse(consultationRequestId, response))
                 .build();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @GetMapping("/get/{consultationRequestId}")
     @SecurityRequirement(name = "bearerAuth")

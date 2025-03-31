@@ -1,6 +1,6 @@
 package com.swp.project.service;
 
-import com.swp.project.dto.response.ConsultationResponseCreation;
+import com.swp.project.dto.request.ConsultationResponseCreation;
 import com.swp.project.dto.response.ConsultationResponseDTO;
 import org.springframework.data.domain.Page;
 

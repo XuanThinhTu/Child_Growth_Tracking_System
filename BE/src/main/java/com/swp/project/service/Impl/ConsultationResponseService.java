@@ -1,6 +1,6 @@
 package com.swp.project.service.Impl;
 
-import com.swp.project.dto.response.ConsultationResponseCreation;
+import com.swp.project.dto.request.ConsultationResponseCreation;
 import com.swp.project.dto.response.ConsultationResponseDTO;
 import com.swp.project.entity.ConsultationRequest;
 import com.swp.project.entity.ConsultationResponse;
