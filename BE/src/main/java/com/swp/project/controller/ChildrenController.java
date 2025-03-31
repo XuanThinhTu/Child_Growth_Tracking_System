@@ -19,23 +19,29 @@ public class ChildrenController {
 
     private final IChildrenService childrenService;
 
-
-
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     @SecurityRequirement(name = "bearerAuth")
     public ApiResponse<ChildrenDTO> addChildren(
-
             @RequestParam("name") String name,
-
             @RequestParam("birthDate") String birthDate,
-
             @RequestParam("gender") String gender){
-
         ChildrenDTO childrenDTO = childrenService.addChildren(name, birthDate, gender);
-
         return ApiResponse.<ChildrenDTO>builder()
                 .message("Children added")
+                .data(childrenDTO)
+                .build();
+    }
+
+    @GetMapping("/info/{id}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ApiResponse<ChildrenDTO> getChildrenById(@PathVariable int id){
+
+
+        ChildrenDTO childrenDTO = childrenService.getChildrenById(id);
+
+        return ApiResponse.<ChildrenDTO>builder()
+                .message("Children profile retrieved")
                 .data(childrenDTO)
                 .build();
     }
