@@ -1,6 +1,5 @@
 package com.swp.project.service.Impl;
 
-
 import com.swp.project.dto.request.FAQRequest;
 import com.swp.project.dto.response.FAQResponse;
 import com.swp.project.entity.Category;
@@ -11,7 +10,6 @@ import com.swp.project.repository.FAQRepository;
 import com.swp.project.service.IFAQService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,23 +32,14 @@ public class FAQService implements IFAQService {
 
     @Override
     public FAQResponse createFAQ(FAQRequest request) {
-
         Category category = categoryRepository.findById(request.categoryId())
-
                 .orElseThrow(() -> new IllegalArgumentException("Category with id: " + request.categoryId() + " not found"));
         FAQ faq = new FAQ();
-
         faq.setQuestion(request.question());
-
         faq.setAnswer(request.answer());
-
         faq.setCategory(category);
-
         faqRepository.save(faq);
-
         return faqMapper.toDto(faq);
-
-
     }
 
 
