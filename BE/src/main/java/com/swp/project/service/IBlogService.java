@@ -13,6 +13,6 @@ public interface IBlogService {
     Page<BlogDTO> getAllBlogs(int page, int size);
     void deleteBlog(int blogId) throws IOException;
     BlogDTO getBlogById(int blogId);
-
+    BlogDTO updateBlog(int blogId, String title, String content, int categoryId, MultipartFile[] images) throws IOException;
 
 }

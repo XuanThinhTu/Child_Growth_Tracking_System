@@ -10,6 +10,7 @@ import com.swp.project.repository.BlogImageRepository;
 import com.swp.project.repository.BlogRepository;
 import com.swp.project.repository.CategoryRepository;
 import com.swp.project.service.IBlogService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -95,18 +96,52 @@ public class BlogService implements IBlogService {
 
     @Override
     public BlogDTO getBlogById(int blogId) {
-
-
-
         Blog blog = blogRepository.findById(blogId)
-
-
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
-
         return blogMapper.toBlogDTO(blog);
-
-
     }
 
+    @Transactional
+    @Override
+    public BlogDTO updateBlog(int blogId, String title, String content, int categoryId, MultipartFile[] images) throws IOException {
+        Blog blog = blogRepository.findById(blogId)
+                .orElseThrow(() -> new RuntimeException("Blog not found"));
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        blog.setTitle(title);
+        blog.setContent(content);
+        blog.setUpdatedAt(Date.valueOf(LocalDate.now()));
+        blog.setCategory(category);
+
+        // Remove old images properly
+        if (images != null && !blog.getBlogImages().isEmpty()) {
+            for (BlogImage blogImage : new ArrayList<>(blog.getBlogImages())) {
+                log.info("Deleting image with public id {}", blogImage.getPublicId());
+                cloudinaryService.delete(blogImage.getPublicId()); // Delete from Cloudinary
+            }
+            blog.getBlogImages().clear(); // Remove old images properly
+        }
+        // Save blog first so it's managed
+        blog = blogRepository.save(blog);
+        // Add new images
+        List<BlogImage> newBlogImages = new ArrayList<>();
+        if (images != null) {
+            for (MultipartFile image : images) {
+                Map map = cloudinaryService.upload(image);
+                String url = (String) map.get("secure_url");
+                String publicId = (String) map.get("public_id");
+                BlogImage blogImage = new BlogImage();
+                blogImage.setUrl(url);
+                blogImage.setPublicId(publicId);
+                blogImage.setBlog(blog);
+                newBlogImages.add(blogImage);
+            }
+        }
+        // Add new images to blog safely
+        blog.getBlogImages().addAll(newBlogImages);
+        blogRepository.save(blog); // Save again to persist images
+        return blogMapper.toBlogDTO(blog);
+    }
 
 }
