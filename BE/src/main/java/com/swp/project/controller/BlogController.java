@@ -5,6 +5,7 @@ import com.swp.project.dto.response.BlogDTO;
 import com.swp.project.service.IBlogService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,12 +33,26 @@ public class BlogController {
 
     @GetMapping("/get/{blogId}")
     public ApiResponse<BlogDTO> getBlog(@PathVariable int blogId) {
-
         return ApiResponse.<BlogDTO>builder()
-
                 .message("Blog")
-
                 .data(blogService.getBlogById(blogId))
+                .build();
+
+    }
+
+    @GetMapping("/all")
+
+    @SecurityRequirement(name = "bearerAuth")
+
+    public ApiResponse<Page<BlogDTO>> getAllBlogs(@RequestParam(name = "page", defaultValue = "0") int page,
+
+                                                  @RequestParam(name = "size", defaultValue = "10") int size) {
+
+        return ApiResponse.<Page<BlogDTO>>builder()
+
+                .message("All blogs")
+
+                .data(blogService.getAllBlogs(page, size))
 
                 .build();
 
