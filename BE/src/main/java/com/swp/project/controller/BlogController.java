@@ -41,18 +41,28 @@ public class BlogController {
     }
 
     @GetMapping("/all")
+    @SecurityRequirement(name = "bearerAuth")
+    public ApiResponse<Page<BlogDTO>> getAllBlogs(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                  @RequestParam(name = "size", defaultValue = "10") int size) {
+        return ApiResponse.<Page<BlogDTO>>builder()
+                .message("All blogs")
+                .data(blogService.getAllBlogs(page, size))
+                .build();
+    }
+
+    @DeleteMapping("/delete/{blogId}")
 
     @SecurityRequirement(name = "bearerAuth")
 
-    public ApiResponse<Page<BlogDTO>> getAllBlogs(@RequestParam(name = "page", defaultValue = "0") int page,
+    @PreAuthorize("hasRole('ROLE_DOCTOR') or hasRole('ROLE_ADMIN')")
 
-                                                  @RequestParam(name = "size", defaultValue = "10") int size) {
+    public ApiResponse<Void> deleteBlog(@PathVariable int blogId) throws IOException {
 
-        return ApiResponse.<Page<BlogDTO>>builder()
+        blogService.deleteBlog(blogId);
 
-                .message("All blogs")
+        return ApiResponse.<Void>builder()
 
-                .data(blogService.getAllBlogs(page, size))
+                .message("Blog deleted")
 
                 .build();
 
