@@ -46,11 +46,12 @@ public class CategoryService implements ICategoryService {
         return categories.stream().map(categoryMapper::toCategoryDTO).collect(Collectors.toList());
     }
 
-
-
-
-
-
-
+    @Override
+    public void deleteCategory(int id) {
+        Category category = categoryRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        category.setDeleted(true);
+        categoryRepository.save(category);
+    }
 
 }
