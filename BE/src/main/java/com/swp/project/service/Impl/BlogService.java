@@ -78,32 +78,35 @@ public class BlogService implements IBlogService {
 
     @Override
     public void deleteBlog(int blogId) throws IOException {
-
         User currentUser = userService.getAuthenticatedUser();
-
         List<BlogImage> blogImages = blogImageRepository.findByBlogId(blogId);
-
         for(BlogImage blogImage : blogImages){
-
             log.info("Deleting image with public id {}", blogImage.getPublicId());
-
             cloudinaryService.delete(blogImage.getPublicId());
-
         }
         Blog blog = blogRepository.findById(blogId)
-
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
         if(blog.getUser().getId() != currentUser.getId()){
-
             log.warn("User {} is not allowed to delete blog {}", currentUser.getId(), blogId);
-
             throw new RuntimeException("You are not allowed to delete this blog");
-
         }
         blogRepository.delete(blog);
-
     }
 
+    @Override
+    public BlogDTO getBlogById(int blogId) {
+
+
+
+        Blog blog = blogRepository.findById(blogId)
+
+
+                .orElseThrow(() -> new RuntimeException("Blog not found"));
+
+        return blogMapper.toBlogDTO(blog);
+
+
+    }
 
 
 }
