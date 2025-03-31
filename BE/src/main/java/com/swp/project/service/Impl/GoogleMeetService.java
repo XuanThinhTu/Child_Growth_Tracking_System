@@ -18,22 +18,6 @@ import static com.swp.project.config.GoogleMeetConfig.*;
 
 @Service
 public class GoogleMeetService {
-//    private static final String APPLICATION_NAME = "BabyTrackingSys";
-//    private static final JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-//    // Đường dẫn tới file credentials của Service Account
-//    private static final String CREDENTIALS_FILE_PATH = "src/main/resources/credentials.json";
-//
-//    /**
-//     * Tạo và trả về đối tượng Calendar đã được xác thực.
-//     */
-//    private static Calendar getCalendarService() throws Exception {
-//        GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream(CREDENTIALS_FILE_PATH))
-//                .createScoped(Collections.singleton(CalendarScopes.CALENDAR));
-//        return new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, credential)
-//                .setApplicationName(APPLICATION_NAME)
-//                .build();
-//    }
-
     /**
      * Tạo sự kiện trên Google Calendar với conferenceData (Google Meet) và trả về link Google Meet.
      */
