@@ -8,6 +8,9 @@ import com.swp.project.mapper.ChildrenMapper;
 import com.swp.project.repository.*;
 import com.swp.project.service.IChildrenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -18,9 +21,7 @@ import java.util.List;
 public class ChildrenService implements IChildrenService {
 
     private final ChildrenMapper childrenMapper;
-
     private final ChildrenRepository childrenRepository;
-
     private final UserService userService;
 
 
@@ -66,25 +67,25 @@ public class ChildrenService implements IChildrenService {
 
     @Override
     public List<ChildrenDTO> getChildrenByParentId(int id) {
-
         List<Children> childrenList = childrenRepository.findByUserId(id);
-
         return childrenList.stream().map(childrenMapper::toChildrenDTO).toList();
 
     }
     @Override
     public void deleteChildren(int id) {
-
         User user = userService.getAuthenticatedUser();
-
         Children children = childrenRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Children not found"));
-
         if(children.getUser().getId() != user.getId()){
             throw new RuntimeException("You can only delete your own children");
         }
-
         childrenRepository.delete(children);
+    }
 
+    @Override
+    public Page<ChildrenDTO> getAllChildren(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Children> children = childrenRepository.findAll(pageable);
+        return children.map(childrenMapper::toChildrenDTO);
     }
 
 
