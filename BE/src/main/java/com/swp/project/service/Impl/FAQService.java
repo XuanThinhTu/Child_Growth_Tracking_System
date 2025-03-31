@@ -56,29 +56,23 @@ public class FAQService implements IFAQService {
 
     @Override
     public FAQResponse updateFAQ(int fqaId, FAQRequest request) {
-
         Category category = categoryRepository.findById(request.categoryId())
-
                 .orElseThrow(() -> new IllegalArgumentException("Category with id: " + request.categoryId() + " not found"));
-
         FAQ faq = faqRepository.findByIdAndIsDeletedFalse(fqaId)
-
                 .orElseThrow(() -> new IllegalArgumentException("FAQ with id: " + fqaId + " not found"));
-
         faq.setQuestion(request.question());
-
         faq.setAnswer(request.answer());
-
         faq.setCategory(category);
-
         faqRepository.save(faq);
-
         return faqMapper.toDto(faq);
-
     }
 
-
-
-
+    @Override
+    public void deleteFAQ(int fqaId) {
+        FAQ faq = faqRepository.findByIdAndIsDeletedFalse(fqaId)
+                .orElseThrow(() -> new IllegalArgumentException("FAQ with id: " + fqaId + " not found"));
+        faq.setDeleted(true);
+        faqRepository.save(faq);
+    }
 
 }
