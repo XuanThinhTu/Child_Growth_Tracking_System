@@ -8,8 +8,14 @@ import java.util.List;
 public interface IChildrenService {
     List<ChildrenDTO> getChildrenByAuthenticatedUser();
     ChildrenDTO addChildren(String name, String birthDate, String gender);
-
     ChildrenDTO updateChildren(int id, String name, String birthDate, String gender);
     ChildrenDTO getChildrenById(int id);
+
+    List<ChildrenDTO> getChildrenByParentId(int id);
+
+    void deleteChildren(int id);
+
+
+
 
 }

@@ -64,17 +64,28 @@ public class ChildrenService implements IChildrenService {
         return childrenMapper.toChildrenDTO(children);
     }
 
+    @Override
+    public List<ChildrenDTO> getChildrenByParentId(int id) {
 
+        List<Children> childrenList = childrenRepository.findByUserId(id);
 
+        return childrenList.stream().map(childrenMapper::toChildrenDTO).toList();
 
+    }
+    @Override
+    public void deleteChildren(int id) {
 
+        User user = userService.getAuthenticatedUser();
 
+        Children children = childrenRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Children not found"));
 
+        if(children.getUser().getId() != user.getId()){
+            throw new RuntimeException("You can only delete your own children");
+        }
 
+        childrenRepository.delete(children);
 
-
-
-
+    }
 
 
 }
