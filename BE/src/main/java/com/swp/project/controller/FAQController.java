@@ -44,5 +44,14 @@ public class FAQController {
         );
     }
 
+    @DeleteMapping("/{faqId}")
+    public ResponseEntity<ApiResponse<?>> deleteFAQs(@PathVariable int faqId) {
+        faqService.deleteFAQ(faqId);
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .message("FAQ with id: " + faqId + " deleted successfully!!")
+                        .build()
+        );
+    }
 
 }
