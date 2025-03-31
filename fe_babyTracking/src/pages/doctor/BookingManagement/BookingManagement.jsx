@@ -22,11 +22,12 @@ const BookingManagement = () => {
     fetchBookingList();
   }, []);
 
-  const handleStartMeeting = async (meetingId) => {
+  const handleStartMeeting = async (meeting) => {
     try {
-      const result = await startMeeting(meetingId);
+      const result = await startMeeting(meeting?.id);
       if (result) {
         toast.success("Start meeting success!");
+        window.location.href = meeting?.meetingLink;
       } else {
         toast.error("Start meeting failed!");
       }
@@ -65,7 +66,7 @@ const BookingManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {meetingList.map((bk) => (
+          {meetingList?.map((bk) => (
             <tr key={bk.id} className="border-b hover:bg-gray-50">
               <td className="p-2">{bk.id}</td>
               <td className="p-2">
@@ -92,7 +93,7 @@ const BookingManagement = () => {
               <td className="p-2">
                 {bk.status === "PENDING" ? (
                   <button
-                    onClick={() => handleStartMeeting(bk.id)}
+                    onClick={() => handleStartMeeting(bk)}
                     className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
                   >
                     Start
