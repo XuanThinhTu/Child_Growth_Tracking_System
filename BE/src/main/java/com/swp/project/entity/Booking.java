@@ -35,6 +35,9 @@ public class Booking {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "google_event_id")
+    private String googleEventId;
+
     @ManyToOne
     @JoinColumn(name = "member_id")
     private User member;

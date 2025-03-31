@@ -1,6 +1,8 @@
 package com.swp.project.service.Impl;
 
 import com.swp.project.config.security.jwt.JwtUtils;
+import com.swp.project.entity.Booking;
+import com.swp.project.entity.User;
 import com.swp.project.repository.UserRepository;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -110,7 +112,7 @@ public class EmailService {
                 + "      <p>Address : " + address + "</p>\n"
                 + "      <p>Phone number : " + phone + "</p>\n"
                 + "      <p>This email valid in 24h. Please verify your email as soon as possible</p>\n"
-                + "      <a class=\"button\" href=\" " + clientUrl + "verify?token=" + jwtUtils.generateVerificationToken(email) + "\">VERIFY</a>\n"
+                + "      <a class=\"button\" href=\""+ clientUrl + "verify?token=" + jwtUtils.generateVerificationToken(email)+"\">VERIFY</a>\n"
                 + "      <p>We are ready support</p>\n"
                 + "    </div>\n"
                 + "    <div class=\"footer\">\n"
@@ -190,7 +192,93 @@ public class EmailService {
                 + "      <h3>Reset Password</h3>\n"
                 + "      <p>Date : " + LocalDate.now() + "</p>\n"
                 + "      <p>This email valid in 24h</p>\n"
-                + "      <a class=\"button\" href=\" " + clientUrl + "reset/password?token=" + jwtUtils.generateResetPasswordToken(email) + "\">RESET PASSWORD</a>\n"
+                + "      <a class=\"button\" href=\""+ clientUrl + "reset/password?token=" + jwtUtils.generateResetPasswordToken(email)+"\">RESET PASSWORD</a>\n"
+                + "      <p>We are ready support</p>\n"
+                + "    </div>\n"
+                + "    <div class=\"footer\">\n"
+                + "      <p>Thanks for Subscribe</p>\n"
+                + "    </div>\n"
+                + "  </div>\n"
+                + "</body>\n"
+                + "</html>";
+    }
+
+    public String subjectCreateBooking(){
+        return "Appointment Information";
+    }
+
+
+    public String sendBookingConfirmation(User member, Booking booking) {
+        return "<!DOCTYPE html>\n"
+                + "<html lang=\"en\">\n"
+                + "<head>\n"
+                + "  <meta charset=\"utf-8\">\n"
+                + "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n"
+                + "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+                + "  <style>\n"
+                + "    body {\n"
+                + "      font-family: Arial, sans-serif;\n"
+                + "      background-color: #f4f4f4;\n"
+                + "      margin: 0;\n"
+                + "      padding: 0;\n"
+                + "    }\n"
+                + "\n"
+                + "    .email-container {\n"
+                + "      max-width: 600px;\n"
+                + "      margin: 20px auto;\n"
+                + "      background-color: #fff;\n"
+                + "      border-radius: 8px;\n"
+                + "      overflow: hidden;\n"
+                + "      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
+                + "    }\n"
+                + "\n"
+                + "    .header {\n"
+                + "      background-color: #00796B;\n"
+                + "      color: #fff;\n"
+                + "      padding: 20px;\n"
+                + "      text-align: center;\n"
+                + "    }\n"
+                + "\n"
+                + "    .content {\n"
+                + "      padding: 20px;\n"
+                + "    }\n"
+                + "\n"
+                + "    .button{\n" +
+                "        background-color: #A3D9A5;\n" +
+                "        color: #fff;\n" +
+                "        margin: 24px 24px 24px 24px;\n" +
+                "        padding: 10px 20px;\n" +
+                "        border: none;\n" +
+                "        cursor: pointer;\n" +
+                "        text-decoration: none;\n" +
+                "      }\n"
+                + "\n"
+                + " a {\n" +
+                "        color: #fff;\n" +
+                "      }\n"
+                + "    .footer {\n"
+                + "      background-color: #34db74;\n"
+                + "      color: #fff;\n"
+                + "      padding: 10px;\n"
+                + "      text-align: center;\n"
+                + "    }\n"
+                + "  </style>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "  <div class=\"email-container\">\n"
+                + "    <div class=\"header\">\n"
+                + "     <h1>Baby Tracking System</h1>\n "
+                + "      <h2>Welcome " + member.getFirstName() + " " + member.getLastName() + "</h2>\n"
+                + "    </div>\n"
+                + "    <div class=\"content\">\n"
+                + "      <h3>Your appointment information:</h3>\n"
+                + "      <p>Appointment date : " + booking.getDate() + "</p>\n"
+                + "      <p>Doctor name : Dr." + booking.getDoctor().getFirstName() + " " + booking.getDoctor().getLastName() + "</p>\n"
+                + "      <p>Booked for : " + booking.getChildren().getName() + "</p>\n"
+                + "      <p>Reason : " + booking.getContent() + "</p>\n"
+                + "      <p>Meeting time : " + booking.getSlotTime().getStartTime().toString() + " - " + booking.getSlotTime().getEndTime().toString() + "</p>\n"
+                + "      <p>Please enter the meeting room on time as scheduled to ensure you enjoy the full appointment experience.</p>\n"
+                + "      <a class=\"button\" href=\" " + booking.getMeetingLink() + "\">CLICK TO JOIN</a>\n"
                 + "      <p>We are ready support</p>\n"
                 + "    </div>\n"
                 + "    <div class=\"footer\">\n"
