@@ -11,7 +11,7 @@ import com.swp.project.exception.OutOfPermissionException;
 import com.swp.project.mapper.ConsultationRequestMapper;
 import com.swp.project.repository.*;
 import com.swp.project.service.IConsultationRequestService;
-//import com.swp.project.service.INotificationService;
+import com.swp.project.service.INotificationService;
 import com.swp.project.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class ConsultationRequestService implements IConsultationRequestService {
     private final ChildrenRepository childrenRepository;
     private final ConsultationRequestMapper consultationRequestMapper;
     private final UserRepository userRepository;
-//    private final INotificationService notificationService;
+    private final INotificationService notificationService;
 
     @Override
     public ConsultationRequestDTO createConsultationRequest(ConsultationRequestCreation request) {
@@ -105,12 +105,12 @@ public class ConsultationRequestService implements IConsultationRequestService {
         consultationRequest.setDoctor(doctor);
         consultationRequest.setStatus(ConsultationStatus.ASSIGNED);
         consultationRequest = consultationRequestRepository.save(consultationRequest);
-//        notificationService.sendNotification(
-//                doctorId,
-//                "Consultation Request Assigned",
-//                "You have been assigned to a consultation request",
-//                NotificationType.CONSULTATION
-//        );
+        notificationService.sendNotification(
+                doctorId,
+                "Consultation Request Assigned",
+                "You have been assigned to a consultation request",
+                NotificationType.CONSULTATION
+        );
         return consultationRequestMapper.toConsultationRequestDTO(consultationRequest);
     }
 
