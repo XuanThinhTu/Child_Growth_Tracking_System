@@ -22,6 +22,8 @@ const WeightChart = ({ babyId }) => {
   const [growthData, setGrowthData] = useState([]); // Dữ liệu chuẩn (SD lines)
   const [userData, setUserData] = useState([]); // Dữ liệu bé
   const [predictData, setPredictData] = useState([]);
+  const [currentData, setCurrentData] = useState(0);
+  const [currentStandard, setCurrentStandard] = useState(0);
 
   // Tính ngày so với birthDate
   const calculateDays = (birthDate, measuredAt) => {
@@ -76,6 +78,7 @@ const WeightChart = ({ babyId }) => {
           height: item.height,
         }));
         setUserData(formattedData);
+        setCurrentData(formattedData[formattedData.length - 1]);
       } catch (error) {
         console.log(error);
       }
@@ -84,28 +87,28 @@ const WeightChart = ({ babyId }) => {
   }, [baby, babyId]);
 
   useEffect(() => {
-      const fetchPredictData = async () => {
-        if (!baby || !userData.length) return;
-        try {
-          const result = await getPredictGrowthData(babyId);
-          const formattedData = result.map((item) => ({
-            day: calculateDays(baby.birthDate, item.predictedDate),
-            predictWeight: item.predictedWeight,
-          }));
-          // Lấy dữ liệu của ngày cuối cùng của bé và chuyển đổi sang object có 2 thuộc tính: day và predictHeight
-          const lastDayData = userData[userData.length - 1];
-          const lastDayPredict = {
-            day: lastDayData.day,
-            predictWeight: lastDayData.weight,
-          };
-  
-          setPredictData([lastDayPredict, ...formattedData]);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchPredictData();
-    }, [baby, babyId, userData]);
+    const fetchPredictData = async () => {
+      if (!baby || !userData.length) return;
+      try {
+        const result = await getPredictGrowthData(babyId);
+        const formattedData = result.map((item) => ({
+          day: calculateDays(baby.birthDate, item.predictedDate),
+          predictWeight: item.predictedWeight,
+        }));
+        // Lấy dữ liệu của ngày cuối cùng của bé và chuyển đổi sang object có 2 thuộc tính: day và predictHeight
+        const lastDayData = userData[userData.length - 1];
+        const lastDayPredict = {
+          day: lastDayData.day,
+          predictWeight: lastDayData.weight,
+        };
+
+        setPredictData([lastDayPredict, ...formattedData]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchPredictData();
+  }, [baby, babyId, userData]);
 
   // Lấy dữ liệu chuẩn (weight)
   useEffect(() => {
@@ -118,7 +121,7 @@ const WeightChart = ({ babyId }) => {
             : await getGirlStandardIndex();
 
         const formattedData = result.map((item) => ({
-          day: (item.periodType === "DAY" ? item.period : (item.period * 30) + 56), // ngày
+          day: item.periodType === "DAY" ? item.period : item.period * 30 + 56, // ngày
           SD4neg: item.weightNeg4Sd,
           SD3neg: item.weightNeg3Sd,
           SD2neg: item.weightNeg2Sd,
@@ -138,6 +141,13 @@ const WeightChart = ({ babyId }) => {
     fetchWeightData();
   }, [baby]);
 
+  useEffect(() => {
+    if (growthData.length && currentData?.day !== undefined) {
+      const standard = growthData.find((item) => item.day === currentData.day);
+      setCurrentStandard(standard ? [standard] : []);
+    }
+  }, [growthData, currentData]);
+
   // === Tính domain X ===
   // Lấy ngày lớn nhất của bé + 60
 
@@ -145,7 +155,6 @@ const WeightChart = ({ babyId }) => {
     ? Math.max(...userData.map((d) => d.day))
     : Math.max(...growthData.map((d) => d.day));
 
-  
   const domainMax = userMaxDay + 60; // Dư 60 ngày
 
   // Tạo mảng tick bội số 30 => hiển thị "tháng"
@@ -154,7 +163,6 @@ const WeightChart = ({ babyId }) => {
   for (let i = period; i <= domainMax; i += period) {
     ticks.push(i);
   }
-
 
   // === Tính domain Y “center” quanh dữ liệu bé (bỏ qua SD lines) ===
   // Tính domain Y dựa trên so sánh giữa dữ liệu của bé và chỉ số chuẩn
@@ -179,6 +187,7 @@ const WeightChart = ({ babyId }) => {
     yMax = Math.max(babyMax, standardMax);
     if (yMin < 0) yMin = 0;
   }
+
   const mergedData = [...userData, ...predictData].sort(
     (a, b) => a.day - b.day
   );
@@ -197,8 +206,14 @@ const WeightChart = ({ babyId }) => {
           scale="linear"
           ticks={ticks}
           interval={0}
-          tickFormatter={(val) => (userData.length ? `${val / 30}` : `${val / 365}`)}
-          label={{ value: (userData.length ? "Tháng" : "Năm"), position: "insideBottomRight", offset: 0 }}
+          tickFormatter={(val) =>
+            userData.length ? `${val / 30}` : `${val / 365}`
+          }
+          label={{
+            value: userData.length ? "Tháng" : "Năm",
+            position: "insideBottomRight",
+            offset: 0,
+          }}
         />
 
         {/* Trục Y */}
@@ -256,6 +271,7 @@ const WeightChart = ({ babyId }) => {
             dot={{ r: 4 }}
             activeDot={{ r: 6 }}
             isAnimationActive={false}
+            strokeDasharray="5 5"
           />
         )}
 
@@ -295,6 +311,19 @@ const WeightChart = ({ babyId }) => {
           Chỉ số tiêu chuẩn
         </a>
       </div>
+      {userData && currentData?.weight < currentStandard[0]?.SD1neg ? (
+        <div className="text-red-500 text-center mb-4">
+          ⚠️ LƯU Ý: CHỈ SỐ CÂN NẶNG CỦA BÉ ĐANG Ở MỨC SUY DINH DƯỠNG!
+        </div>
+      ) : userData && currentData?.weight > currentStandard[0]?.SD1 ? (
+        <div className="text-red-500 text-center mb-4">
+          ⚠️ LƯU Ý: CHỈ SỐ CÂN NẶNG CỦA BÉ ĐANG Ở MỨC THỪA CÂN!
+        </div>
+      ) : userData.length > 0 ? (
+        <div className="text-green-500 text-center mb-4">
+          ✅ BÉ CÓ CHỈ SỐ CÂN NẶNG KHỎE MẠNH!
+        </div>
+      ) : null}
 
       {/* Chart container */}
       <div style={{ width: "100%", height: 600 }}>{renderChart()}</div>

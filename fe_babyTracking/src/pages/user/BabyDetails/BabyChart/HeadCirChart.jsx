@@ -22,6 +22,8 @@ const HeadCirChart = ({ babyId }) => {
   const [growthData, setGrowthData] = useState([]); // SD lines
   const [userData, setUserData] = useState([]); // data bé
   const [predictData, setPredictData] = useState([]);
+  const [currentData, setCurrentData] = useState(0);
+  const [currentStandard, setCurrentStandard] = useState(0);
 
   // Lấy ngày (so với birthDate)
   const calculateDays = (birthDate, measuredAt) => {
@@ -75,6 +77,7 @@ const HeadCirChart = ({ babyId }) => {
           headCir: item.headCircumference,
         }));
         setUserData(formatted);
+        setCurrentData(formatted[formatted.length - 1]);
       } catch (error) {
         console.log(error);
       }
@@ -135,6 +138,13 @@ const HeadCirChart = ({ babyId }) => {
     };
     fetchHeadCirData();
   }, [baby]);
+
+  useEffect(() => {
+    if (growthData.length && currentData?.day !== undefined) {
+      const standard = growthData.find((item) => item.day === currentData.day);
+      setCurrentStandard(standard ? [standard] : []);
+    }
+  }, [growthData, currentData]);
 
   // === Tính domain X ===
   // Lấy ngày lớn nhất của bé + 60
@@ -256,11 +266,15 @@ const HeadCirChart = ({ babyId }) => {
             dot={{ r: 4 }}
             activeDot={{ r: 6 }}
             isAnimationActive={false}
+            strokeDasharray="5 5"
           />
         )}
       </LineChart>
     </ResponsiveContainer>
   );
+
+  console.log(currentData);
+  console.log("stan", currentStandard);
 
   return (
     <div className="w-full px-4 py-12">
@@ -270,6 +284,19 @@ const HeadCirChart = ({ babyId }) => {
           Chỉ số tiêu chuẩn
         </a>
       </div>
+      {userData && currentData?.headCir < currentStandard[0]?.SD1neg ? (
+        <div className="text-red-500 text-center mb-4">
+          ⚠️ LƯU Ý: CHU VI ĐẦU CỦA BÉ ĐANG NHỎ HƠN MỨC CHUẨN!
+        </div>
+      ) : userData && currentData?.headCir > currentStandard[0]?.SD1 ? (
+        <div className="text-red-500 text-center mb-4">
+          ⚠️ LƯU Ý: CHU VI ĐẦU CỦA BÉ ĐANG TO HƠN MỨC CHUẨN!
+        </div>
+      ) : userData.length > 0 ? (
+        <div className="text-green-500 text-center mb-4">
+          ✅ BÉ CÓ CHỈ SỐ CHU VI ĐẦU KHỎE MẠNH!
+        </div>
+      ) : null}
 
       {/* Chart */}
       <div style={{ width: "100%", height: 600 }}>{renderChart()}</div>

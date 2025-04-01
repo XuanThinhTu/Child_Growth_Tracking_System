@@ -7,6 +7,7 @@ import { getAllDoctors } from "../../../services/APIServices";
 const DoctorPage = () => {
   const [doctors, setDoctors] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchAllDoctors = async () => {
       try {
@@ -32,11 +33,19 @@ const DoctorPage = () => {
             >
               {/* Container cho ảnh */}
               <div className="relative w-full h-80 overflow-hidden">
-                <img
-                  src={doc.image}
-                  alt={doc.name}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 transform group-hover:scale-105"
-                />
+                {doc.image ? (
+                  <img
+                    src={doc.image}
+                    alt={doc.name}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 transform group-hover:scale-105"
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0 w-full h-full flex items-center justify-center text-7xl text-white bg-green-500" // Increased emoji size
+                  >
+                    🧑🏽‍⚕️
+                  </div>
+                )}
               </div>
 
               {/* Thông tin bác sĩ */}

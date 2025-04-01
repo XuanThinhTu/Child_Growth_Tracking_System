@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAllDoctors } from "../../../services/APIServices";
-import {
-  FaStar,
-  FaStarHalfAlt,
-  FaRegStar,
-  FaUserCircle,
-} from "react-icons/fa";
+import { FaStar, FaStarHalfAlt, FaRegStar, FaUserCircle } from "react-icons/fa";
 
 const DoctorDetail = () => {
   const { doctorId } = useParams();
@@ -108,11 +103,19 @@ const DoctorDetail = () => {
       {/* Phần 1: Doctor Info */}
       <section className="bg-white p-6 rounded shadow-sm flex flex-col md:flex-row md:space-x-8 items-center md:items-start">
         <div className="md:w-1/3 w-full flex flex-col items-center md:items-center border p-6 rounded shadow-sm">
-          <img
-            src={doctor?.image || "https://via.placeholder.com/150"}
-            alt="Doctor"
-            className="w-36 h-36 object-cover rounded-full mb-4 shadow"
-          />
+          <div className="relative w-full h-36 flex items-center justify-center mb-4">
+            {doctor?.image ? (
+              <img
+                src={doctor.image}
+                alt="Doctor"
+                className="w-36 h-36 object-cover rounded-full shadow"
+              />
+            ) : (
+              <div className="w-36 h-36 flex items-center justify-center text-7xl text-white bg-green-500 rounded-full shadow">
+                🧑🏽‍⚕️
+              </div>
+            )}
+          </div>
           <h2 className="text-2xl font-semibold mb-1 text-gray-800">
             Dr. {doctor.firstName} {doctor.lastName}
           </h2>
@@ -243,7 +246,9 @@ const DoctorDetail = () => {
                 <FaUserCircle className="text-gray-400 text-2xl" />
                 <span className="font-semibold text-gray-800">{fb.user}</span>
                 {renderStars(fb.rating)}
-                <span className="text-gray-600 ml-2">{fb.rating.toFixed(1)}</span>
+                <span className="text-gray-600 ml-2">
+                  {fb.rating.toFixed(1)}
+                </span>
               </div>
               <p className="text-gray-700 italic">{fb.comment}</p>
             </div>
