@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { getUserInformation } from "../../services/APIServices";
 import { AiOutlineUser } from "react-icons/ai";
-import babytrackingLogo from '../../assets/images/logo/babyLogo2.png';
+import babytrackingLogo from "../../assets/images/logo/babyLogo2.png";
 
 function UserHeader() {
   const token = sessionStorage.getItem("token");
@@ -11,8 +11,7 @@ function UserHeader() {
   const navigation = useNavigate();
 
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("userId");
+    sessionStorage.clear();
     setUser(null);
     navigation("/login");
   };

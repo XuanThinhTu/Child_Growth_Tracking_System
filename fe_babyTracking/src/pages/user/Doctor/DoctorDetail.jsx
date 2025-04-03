@@ -104,9 +104,9 @@ const DoctorDetail = () => {
       <section className="bg-white p-6 rounded shadow-sm flex flex-col md:flex-row md:space-x-8 items-center md:items-start">
         <div className="md:w-1/3 w-full flex flex-col items-center md:items-center border p-6 rounded shadow-sm">
           <div className="relative w-full h-36 flex items-center justify-center mb-4">
-            {doctor?.image ? (
+            {doctor?.avatar ? (
               <img
-                src={doctor.image}
+                src={doctor.avatar}
                 alt="Doctor"
                 className="w-36 h-36 object-cover rounded-full shadow"
               />

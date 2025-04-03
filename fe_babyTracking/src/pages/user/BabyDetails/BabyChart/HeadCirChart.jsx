@@ -273,9 +273,6 @@ const HeadCirChart = ({ babyId }) => {
     </ResponsiveContainer>
   );
 
-  console.log(currentData);
-  console.log("stan", currentStandard);
-
   return (
     <div className="w-full px-4 py-12">
       <div className="flex justify-between items-center mb-6">

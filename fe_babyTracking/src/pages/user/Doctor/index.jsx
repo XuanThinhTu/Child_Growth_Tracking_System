@@ -20,6 +20,8 @@ const DoctorPage = () => {
     fetchAllDoctors();
   }, []);
 
+  console.log(doctors);
+
   return (
     <>
       <Breadcrumbs headline="Our Doctors" />
@@ -33,9 +35,9 @@ const DoctorPage = () => {
             >
               {/* Container cho ảnh */}
               <div className="relative w-full h-80 overflow-hidden">
-                {doc.image ? (
+                {doc.avatar ? (
                   <img
-                    src={doc.image}
+                    src={doc.avatar}
                     alt={doc.name}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 transform group-hover:scale-105"
                   />

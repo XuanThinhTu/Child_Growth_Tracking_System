@@ -229,7 +229,7 @@ function Schedule() {
               style={{ cursor: "pointer", textAlign: "center" }}
               onClick={() => handleCardClick(doctor)}
             >
-              <Avatar src={doctor.image} size={80} />
+              <Avatar src={doctor.avatar} size={80} />
               <h3>
                 {doctor.firstName} {doctor.lastName}
               </h3>

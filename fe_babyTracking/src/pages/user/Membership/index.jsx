@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import { getMembershipPackages } from "../../../services/APIServices";
 import { CheckIcon } from "@heroicons/react/outline";
 import { purchaseMembership } from "../../../services/membershipServices";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export default function MembershipPage() {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [buyLoading, setBuyLoading] = useState(false);
 
   useEffect(() => {
     async function fetchPackages() {
@@ -32,6 +35,7 @@ export default function MembershipPage() {
   }
 
   const handlePurchasePackage = async (packageId) => {
+    setBuyLoading(true);
     try {
       const result = await purchaseMembership(packageId);
       if (result) {
@@ -40,6 +44,7 @@ export default function MembershipPage() {
     } catch (error) {
       console.log(error);
     }
+    setBuyLoading(false);
   };
 
   return (
@@ -85,9 +90,10 @@ export default function MembershipPage() {
               className={`flex flex-col justify-between 
                 rounded-3xl p-10 shadow 
                 min-h-[500px]
-                ${pkg.featured
-                  ? "bg-gradient-to-r from-green-400 via-green-500 to-green-300 text-white shadow-2xl"
-                  : "bg-white/70 backdrop-blur-md ring-1 ring-gray-900/10"
+                ${
+                  pkg.featured
+                    ? "bg-gradient-to-r from-green-400 via-green-500 to-green-300 text-white shadow-2xl"
+                    : "bg-white/70 backdrop-blur-md ring-1 ring-gray-900/10"
                 }`}
             >
               {/* Title */}
@@ -166,14 +172,24 @@ export default function MembershipPage() {
               {/* CTA button */}
               <button
                 className={`mt-8 block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
-                ${pkg.featured
+                ${
+                  pkg.featured
                     ? "bg-white text-green-700 hover:bg-green-50 focus-visible:outline-green-500"
                     : "bg-green-500 text-white hover:bg-green-400 focus-visible:outline-green-500"
-                  }
+                }
                 `}
                 onClick={() => handlePurchasePackage(pkg.id)}
               >
-                Buy now
+                {buyLoading ? (
+                  <>
+                    <Spin indicator={<LoadingOutlined spin />} />{" "}
+                    <span>Buying...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Buy now</span>
+                  </>
+                )}
               </button>
             </div>
           ))

@@ -212,7 +212,7 @@ const ConsultationRequests = () => {
         >
           {doctors.map((doctor) => (
             <Option key={doctor.id} value={doctor.id}>
-              {doctor.firstName}-{doctor.lastName}
+              {doctor.firstName} {doctor.lastName}
             </Option>
           ))}
         </Select>
